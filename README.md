@@ -1,19 +1,33 @@
-# radar-range-equation
-
+# Radar Range Equation Calculator
 The **Radar Range Equation** is used to calculate the theoretical **range of the target**.
 
-<div style="text-align: center;">
 
-$\displaystyle
-R_{max} =
-\frac{P_t \text{ } G_t \text{ } G_r \text{ } \lambda^2  \text{ } \sigma}
-{(4\pi)^3 \text{ } R^4}
+
+## Power Received at Radar
+$\displaystyle \boldsymbol{
+{P_r} = \frac{{P_t}\ {G_t}\ {G_r}\ {\lambda^2}\ {\sigma}} {{(4\pi)^3}\ {R^4}}}
 $
 
-</div>
+<br>
+<p style="margin-bottom: 5px;"><b>Units:</b></p>
 
-## Units
+$P_r$ : Power Received ( $W$ )  
+$G_t$ : Gain Transmitted  
+$G_r$ : Gain Received  
+$λ$ : Wavelength ( $m$ )  
+$σ$ : Radar Cross Section ( $m^2$ )  
+$R$ : Range ( $m$ )  
 
-- Range<sub>max</sub> : P<sub>r</sub>
-- Radar Cross Section (RCS) : σ
-- Speed of Light : c = 299,792,458 m/s
+
+
+## Frequency
+$\displaystyle \boldsymbol{
+λ = \frac{c}{v}}
+$
+
+<br>
+<p style="margin-bottom: 5px;"><b>Units:</b></p>
+
+$λ$ : Wavelength ( $m$ )  
+$v$ : Frequency ( $Hz$ )  
+$c$ : Speed of Light ( $299,792,458 \space m/s$ )  
