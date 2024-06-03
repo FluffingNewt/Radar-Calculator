@@ -87,7 +87,6 @@ def calculate_and_plot():
     gain_r = float(gain_r_entry.get())
     freq   = convert_to_Hz(float(freq_entry.get()), freq_unit.get())
     rcs    = float(rcs_entry.get())
-
     range  = convert_to_m(float(range_entry.get()), range_unit.get())
 
     range_values = np.linspace(1, range, 100)
@@ -101,13 +100,12 @@ def calculate_and_plot():
 
     fig.clear()
     ax = fig.add_subplot(111)
-    ax.plot(range_values, 10 * np.log10(pwr_r_values), label="Received Power")
+    ax.plot(range_values, pwr_r_values, label="Received Power")
     # ax.plot(range, 10 * np.log10(pwr_n), label="Noise Jammer")
     # ax.plot(range, 10 * np.log10(P_range_j), label="Repeater Jammer")
     ax.set_xlabel(f"Range ({plot_x_unit.get()})")
     ax.set_ylabel(f"Received Power {plot_y_unit.get()}")
-    # ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
-    # ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+    ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
     ax.legend()
     canvas.draw()
 
