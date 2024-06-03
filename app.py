@@ -147,6 +147,7 @@ def calculate_and_plot():
         pwr_r_values.append(pwr_r)
 
     print(f"\n   = {pwr_r_values[len(pwr_r_values) - 1]} {plot_y_unit.get()}")
+    print(f"\n----------------------------------------------------------------")
 
     ### Plot ###
     fig.clear()
@@ -164,17 +165,43 @@ def calculate_and_plot():
 ###################################### GUI Setup ########################################
 
 
+def validate_entry(event):
+    entry = event.widget
+    value = entry.get().strip()
+    if value == "0" or value == "0.0" or "-" in value or any(char.isalpha() for char in value):
+        entry.config(fg="red")
+    else:
+        entry.config(fg="black")
+
+
+def on_entry_click(event):
+    entry = event.widget
+    if entry.get() == "Enter non-zero value":
+        entry.delete(0, tkinter.END)
+        entry.config(fg="black")
+
+
+def on_focus_out(event):
+    entry = event.widget
+    if not entry.get():
+        entry.insert(0, "Enter non-zero value")
+        entry.config(fg="gray")
+
+
 root = tkinter.Tk()
 root.title("Radar Range Equation Calculator")
 default_font = ('Product Sans', 13)
-
 
 # Power Transmitted
 tkinter.Label(root,
          text="Pt : Power Transmitted",
          font=default_font
         ).grid(row=0, column=0, sticky="w", padx=10, pady=10)
-pwr_t_entry = tkinter.Entry(root)
+pwr_t_entry = tkinter.Entry(root, fg="gray")
+pwr_t_entry.insert(0, "Enter non-zero value")
+pwr_t_entry.bind("<FocusIn>", on_entry_click)
+pwr_t_entry.bind("<FocusOut>", on_focus_out)
+pwr_t_entry.bind("<KeyRelease>", validate_entry)
 pwr_t_entry.grid(row=0, column=1, pady=10)
 pwr_t_unit = tkinter.StringVar()
 pwr_t_unit.set("dBW")
@@ -196,6 +223,7 @@ tkinter.Label(root,
         ).grid(row=1, column=0, sticky="w", padx=10, pady=10)
 gain_t_entry = tkinter.Entry(root)
 gain_t_entry.grid(row=1, column=1, pady=10)
+gain_t_entry.insert(0, "1")  # Insert default value of 1
 
 ###############################################
 
@@ -206,6 +234,7 @@ tkinter.Label(root,
         ).grid(row=2, column=0, sticky="w", padx=10, pady=10)
 gain_r_entry = tkinter.Entry(root)
 gain_r_entry.grid(row=2, column=1, pady=10)
+gain_r_entry.insert(0, "1")  # Insert default value of 1
 
 ###############################################
 
@@ -216,6 +245,7 @@ tkinter.Label(root,
         ).grid(row=3, column=0, sticky="w", padx=10, pady=10)
 freq_entry = tkinter.Entry(root)
 freq_entry.grid(row=3, column=1, pady=10)
+freq_entry.insert(0, "1")  # Insert default value of 1
 freq_unit = tkinter.StringVar()
 freq_unit.set("GHz")
 freq_unit_menu = ttk.Combobox(root,
@@ -235,6 +265,7 @@ tkinter.Label(root,
         ).grid(row=4, column=0, sticky="w", padx=10, pady=10)
 rcs_entry = tkinter.Entry(root)
 rcs_entry.grid(row=4, column=1, pady=10)
+rcs_entry.insert(0, "1")  # Insert default value of 1
 rcs_unit = tkinter.StringVar()
 rcs_unit.set("m\u00B2")
 rcs_unit_menu = ttk.Combobox(root,
@@ -255,6 +286,7 @@ tkinter.Label(root,
         ).grid(row=5, column=0, sticky="w", padx=10, pady=10)
 range_entry = tkinter.Entry(root)
 range_entry.grid(row=5, column=1, pady=10)
+range_entry.insert(0, "1")  # Insert default value of 1
 range_unit = tkinter.StringVar()
 range_unit.set("NMI")
 range_unit_menu = ttk.Combobox(root,
@@ -309,6 +341,10 @@ plot_y_unit_menu = ttk.Combobox(root,
                                state="readonly",
                                width=6)
 plot_y_unit_menu.grid(row=4, column=4, sticky="w")
+
+###############################################
+
+
 
 
 ###################################### App Loop ########################################
