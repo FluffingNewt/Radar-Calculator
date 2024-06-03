@@ -4,6 +4,7 @@ from tkinter import ttk
 import matplotlib.pyplot as pyplot
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
+from matplotlib.ticker import ScalarFormatter
 
 
 #################################### Default Values #####################################
@@ -11,7 +12,7 @@ import numpy as np
 
 units_NMI   = ["NMI", "m", "mi", "ft"]
 units_dBW   = ["dBW", "dBm", "W", "mW"]
-units_rcs  = ["m\u00B2", "cm\u00B2", "ft\u00B2", "in\u00B2"]
+units_rcs  = ["m\u00B2"]
 units_GHz  = ["GHz", "MHz", "kHz", "Hz"]
 
 
@@ -32,82 +33,72 @@ range      = Range (NMI)
 """
 
 def radar_range_equation(pwr_t, gain_t, gain_r, freq, rcs, range):
-    wavelength = convert_to_NMI(convert_to_wavelength(freq, freq_unit), "m")
+    wavelength = convert_to_wavelength(freq, freq_unit)
     numer = pwr_t * gain_t * gain_r * math.pow(wavelength, 2) * rcs
     denom = math.pow(4 * np.pi, 3) * math.pow(range, 4)
     return numer / denom
 
-def convert_to_NMI(value, unit):
-    if   unit == "m"  : return value / 1852
-    elif unit == "mi" : return value * 0.868976242
-    elif unit == "ft" : return value * (1.64578834 * math.pow(10, -4))
+# def convert_to_NMI(value, unit):
+#     if   unit == "m"  : return value / 1852
+#     elif unit == "mi" : return value * 0.868976242
+#     elif unit == "ft" : return value * (1.64578834 * math.pow(10, -4))
+#     else              : return value # Passthrough
+
+def convert_to_m(value, unit):
+    if   unit == "NMI"  : return value * 1852
+    elif unit == "mi" : return value * 1609.344
+    elif unit == "ft" : return value * 0.3048
     else              : return value # Passthrough
 
-def convert_to_NMI2(value, unit):
-    if   unit == "m\u00B2"  : return value * (2.915533496 * math.pow(10, -7))
-    elif unit == "mi\u00B2" : return value * 1.3242933
-    elif unit == "ft\u00B2" : return value * (2.70861925 * math.pow(10, -8))
-    else                    : return value # Passthrough
+# def convert_to_dBW(value, unit):
+#     if   unit == "dBm" : return value - 30.0
+#     elif unit == "W"   : return 10 * math.log10(value)
+#     elif unit == "mW"  : return 10 * math.log10(value / 1000)
+#     else               : return value # Passthrough
 
-def convert_to_dBW(value, unit):
-    if   unit == "dBm" : return value - 30.0
-    elif unit == "W"   : return 10 * math.log10(value)
-    elif unit == "mW"  : return 10 * math.log10(value / 1000)
-    else               : return value # Passthrough
+def convert_to_W(value, unit):
+    if   unit == "dBW" : return math.pow(10, value / 10)
+    elif unit == "dBm" : return math.pow(10, value / 10) / 1000
+    elif unit == "mW"  : return float(value / 1000)
+    else               : return float(value)  # Passthrough, ensure it's a float
 
 def convert_to_Hz(value, unit):
-    if   unit == "GHz" : return value * math.pow(10, 9)
-    elif unit == "MHz" : return value * math.pow(10, 6)
-    elif unit == "kHz" : return value * 1000
-    else               : return value # Passthrough
+    if   unit == "GHz" : return float(value * 1e9)
+    elif unit == "MHz" : return float(value * 1e6)
+    elif unit == "kHz" : return float(value * 1e3)
+    else               : return float(value) # Passthrough
 
 def convert_to_wavelength(freq, unit):
-    c = 299792458   # Speed of light (m/s)
+    c = 299792458.0   # Speed of light (m/s)
     freq = convert_to_Hz(freq, unit)
     return c / freq
 
 def calculate_and_plot():
     print("\n*** Power Received Calculation ***\n")
-    print("BEFORE:")
-    print("------")
-    print(f"pwr_t    :  {float(pwr_t_entry.get())}   {pwr_t_unit.get()}")
-    print(f"gain_t   :  {float(gain_t_entry.get())}")
-    print(f"gain_r   :  {float(gain_r_entry.get())}")
-    print(f"freq     :  {float(freq_entry.get())}    {freq_unit.get()}")
-    print(f"rcs      :  {float(rcs_entry.get())}     {rcs_unit.get()}")
-    print(f"range    :  {float(range_entry.get())}   {range_unit.get()}")
-    print("\n------------------------------\n")
 
-    pwr_t = convert_to_dBW(float(pwr_t_entry.get()), pwr_t_unit.get())
+    print(f"       {float(pwr_t_entry.get())} {pwr_t_unit.get()} * {float(gain_t_entry.get())} * {float(gain_r_entry.get())} * (c / {float(freq_entry.get())} {freq_unit.get()})^2 * {float(rcs_entry.get())} {rcs_unit.get()}")
+    print(f"Pr = ---------------------------------------------")
+    print(f"              (4pi)^3 * ({float(range_entry.get())} {range_unit.get()})^4")
+
+    
+
+    pwr_t  = convert_to_W(float(pwr_t_entry.get()), pwr_t_unit.get())
     gain_t = float(gain_t_entry.get())
     gain_r = float(gain_r_entry.get())
-    freq  = convert_to_Hz(float(freq_entry.get()), freq_unit.get())
-    rcs    = convert_to_NMI2(float(rcs_entry.get()), rcs_unit.get())
-    range  = convert_to_NMI(float(range_entry.get()), range_unit.get())
+    freq   = convert_to_Hz(float(freq_entry.get()), freq_unit.get())
+    rcs    = float(rcs_entry.get())
 
-    range_values = np.linspace(1, 200, 400)
+    range  = convert_to_m(float(range_entry.get()), range_unit.get())
+
+    range_values = np.linspace(1, range, 100)
     pwr_r_values = []
 
     for r in range_values:
-        print(r)
-        pwr_r = radar_range_equation(pwr_t, gain_t, gain_r, freq, rcs, r)
-        print(f"range=  {r}       {pwr_r}")
+        pwr_r = radar_range_equation(pwr_t, gain_t, gain_r, freq, rcs, float(r))
         pwr_r_values.append(pwr_r)
 
-    print("AFTER:")
-    print("------")
-    print(f"pwr_t    :  {pwr_t}")
-    print(f"gain_t   :  {gain_t}")
-    print(f"gain_r   :  {gain_r}")
-    print(f"wave     :  {convert_to_NMI(convert_to_wavelength(freq, freq_unit), "m")}")
-    print(f"rcs      :  {rcs}")
-    print(f"range    :  {range}")
-    print("------------------------------")
-    print(f"pwr_r      :  {pwr_r}")
+    print(f"\n   = {pwr_r_values[len(pwr_r_values) - 1]} m")
 
-    
-    
-    
     fig.clear()
     ax = fig.add_subplot(111)
     ax.plot(range_values, 10 * np.log10(pwr_r_values), label="Received Power")
@@ -115,6 +106,8 @@ def calculate_and_plot():
     # ax.plot(range, 10 * np.log10(P_range_j), label="Repeater Jammer")
     ax.set_xlabel(f"Range ({plot_x_unit.get()})")
     ax.set_ylabel(f"Received Power {plot_y_unit.get()}")
+    # ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
+    # ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     ax.legend()
     canvas.draw()
 
@@ -169,7 +162,7 @@ gain_r_entry.grid(row=2, column=1, pady=10)
 
 # Frequency
 tkinter.Label(root,
-         text="f : Frequency",
+         text="\U0001D453 : Frequency",
          font=default_font
         ).grid(row=3, column=0, sticky="w", padx=10, pady=10)
 freq_entry = tkinter.Entry(root)
@@ -277,12 +270,3 @@ ax.set_xlabel(f"Range ({plot_x_unit.get()})")
 ax.set_ylabel(f"Received Power {plot_y_unit.get()}")
 
 root.mainloop()
-
-
-
-
-
-
-
-
-

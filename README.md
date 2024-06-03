@@ -12,6 +12,7 @@ $
 <p style="margin-bottom: 5px;"><b>Units:</b></p>
 
 $P_r$ : Power Received ( $W$ )  
+$P_t$ : Power Transmitted ( $W$ )  
 $G_t$ : Gain Transmitted  
 $G_r$ : Gain Received  
 $λ$ : Wavelength ( $m$ )  
