@@ -165,29 +165,6 @@ def calculate_and_plot():
 ###################################### GUI Setup ########################################
 
 
-def validate_entry(event):
-    entry = event.widget
-    value = entry.get().strip()
-    if value == "0" or value == "0.0" or "-" in value or any(char.isalpha() for char in value):
-        entry.config(fg="red")
-    else:
-        entry.config(fg="black")
-
-
-def on_entry_click(event):
-    entry = event.widget
-    if entry.get() == "Enter non-zero value":
-        entry.delete(0, tkinter.END)
-        entry.config(fg="black")
-
-
-def on_focus_out(event):
-    entry = event.widget
-    if not entry.get():
-        entry.insert(0, "Enter non-zero value")
-        entry.config(fg="gray")
-
-
 root = tkinter.Tk()
 root.title("Radar Range Equation Calculator")
 default_font = ('Product Sans', 13)
@@ -197,12 +174,9 @@ tkinter.Label(root,
          text="Pt : Power Transmitted",
          font=default_font
         ).grid(row=0, column=0, sticky="w", padx=10, pady=10)
-pwr_t_entry = tkinter.Entry(root, fg="gray")
-pwr_t_entry.insert(0, "Enter non-zero value")
-pwr_t_entry.bind("<FocusIn>", on_entry_click)
-pwr_t_entry.bind("<FocusOut>", on_focus_out)
-pwr_t_entry.bind("<KeyRelease>", validate_entry)
+pwr_t_entry = tkinter.Entry(root)
 pwr_t_entry.grid(row=0, column=1, pady=10)
+pwr_t_entry.insert(0, "1")  # Insert default value of 1
 pwr_t_unit = tkinter.StringVar()
 pwr_t_unit.set("dBW")
 pwr_t_unit_menu = ttk.Combobox(root,
