@@ -95,9 +95,32 @@ def convert_to_wavelength(freq, unit):
     freq = convert_to_Hz(freq, unit)
     return c / freq
 
+def validate_entry(entry):
+    value = entry.get()
+    if not value or float(value) == 0:
+        entry.delete(0, tkinter.END)
+        entry.insert(0, "Enter a nonzero number")
+        entry.config(fg="red")
+        return False
+    entry.config(fg="black")
+    return True
+
+def reset_entry(event, entry):
+    entry.delete(0, tkinter.END)
+    entry.config(fg="black")
+
 def calculate_and_plot():
     ### Calculations ###
     print("\n*** LOGGED CALCULATION: ***\n")
+
+    if not (validate_entry(pwr_t_entry)  and
+            validate_entry(gain_t_entry) and
+            validate_entry(gain_r_entry) and
+            validate_entry(freq_entry)   and
+            validate_entry(rcs_entry)    and
+            validate_entry(range_entry)):
+        print("input error")
+        return
 
     print(f"       {float(pwr_t_entry.get())} {pwr_t_unit.get()} * {float(gain_t_entry.get())} * {float(gain_r_entry.get())} * (c / {float(freq_entry.get())} {freq_unit.get()})^2 * {float(rcs_entry.get())} {rcs_unit.get()}")
     print(f"Pr = ---------------------------------------------")
@@ -116,15 +139,12 @@ def calculate_and_plot():
     if plot_x_unit.get() == "NMI":
         range  = convert_to_NMI(float(range_entry.get()), range_unit.get())
         r_unit = "NMI"
-
     elif plot_x_unit.get() == "mi":
         range  = convert_to_mi(float(range_entry.get()), range_unit.get())
         r_unit = "mi"
-
     elif plot_x_unit.get() == "ft":
         range  = convert_to_ft(float(range_entry.get()), range_unit.get())
         r_unit = "ft"
-
     else:
         range  = convert_to_m(float(range_entry.get()), range_unit.get())
         r_unit = "m"
@@ -137,16 +157,15 @@ def calculate_and_plot():
 
         if plot_y_unit.get() == "dBW":
             pwr_r  = convert_to_dBW(pwr_r, "W")
-            
         elif plot_y_unit.get() == "dBm":
             pwr_r  = convert_to_dBm(pwr_r, "W")
-
         elif plot_y_unit.get() == "mW":
             pwr_r  = convert_to_mW(pwr_r,  "W")
         
         pwr_r_values.append(pwr_r)
 
     print(f"\n   = {pwr_r_values[len(pwr_r_values) - 1]} {plot_y_unit.get()}")
+
     print(f"\n----------------------------------------------------------------")
 
     ### Plot ###
@@ -161,31 +180,7 @@ def calculate_and_plot():
     ax.legend()
     canvas.draw()
 
-
 ###################################### GUI Setup ########################################
-
-
-def validate_entry(event):
-    entry = event.widget
-    value = entry.get().strip()
-    if value == "0" or value == "0.0" or "-" in value or any(char.isalpha() for char in value):
-        entry.config(fg="red")
-    else:
-        entry.config(fg="black")
-
-
-def on_entry_click(event):
-    entry = event.widget
-    if entry.get() == "Enter non-zero value":
-        entry.delete(0, tkinter.END)
-        entry.config(fg="black")
-
-
-def on_focus_out(event):
-    entry = event.widget
-    if not entry.get():
-        entry.insert(0, "Enter non-zero value")
-        entry.config(fg="gray")
 
 
 root = tkinter.Tk()
@@ -198,11 +193,8 @@ tkinter.Label(root,
          font=default_font
         ).grid(row=0, column=0, sticky="w", padx=10, pady=10)
 pwr_t_entry = tkinter.Entry(root, fg="gray")
-pwr_t_entry.insert(0, "Enter non-zero value")
-pwr_t_entry.bind("<FocusIn>", on_entry_click)
-pwr_t_entry.bind("<FocusOut>", on_focus_out)
-pwr_t_entry.bind("<KeyRelease>", validate_entry)
 pwr_t_entry.grid(row=0, column=1, pady=10)
+pwr_t_entry.bind("<FocusIn>", lambda event: reset_entry(event, pwr_t_entry))
 pwr_t_unit = tkinter.StringVar()
 pwr_t_unit.set("dBW")
 pwr_t_unit_menu = ttk.Combobox(root,
@@ -223,7 +215,7 @@ tkinter.Label(root,
         ).grid(row=1, column=0, sticky="w", padx=10, pady=10)
 gain_t_entry = tkinter.Entry(root)
 gain_t_entry.grid(row=1, column=1, pady=10)
-gain_t_entry.insert(0, "1")  # Insert default value of 1
+gain_t_entry.bind("<FocusIn>", lambda event: reset_entry(event, gain_t_entry))
 
 ###############################################
 
@@ -234,7 +226,7 @@ tkinter.Label(root,
         ).grid(row=2, column=0, sticky="w", padx=10, pady=10)
 gain_r_entry = tkinter.Entry(root)
 gain_r_entry.grid(row=2, column=1, pady=10)
-gain_r_entry.insert(0, "1")  # Insert default value of 1
+gain_r_entry.bind("<FocusIn>", lambda event: reset_entry(event, gain_r_entry))
 
 ###############################################
 
@@ -245,7 +237,7 @@ tkinter.Label(root,
         ).grid(row=3, column=0, sticky="w", padx=10, pady=10)
 freq_entry = tkinter.Entry(root)
 freq_entry.grid(row=3, column=1, pady=10)
-freq_entry.insert(0, "1")  # Insert default value of 1
+freq_entry.bind("<FocusIn>", lambda event: reset_entry(event, freq_entry))
 freq_unit = tkinter.StringVar()
 freq_unit.set("GHz")
 freq_unit_menu = ttk.Combobox(root,
@@ -265,7 +257,7 @@ tkinter.Label(root,
         ).grid(row=4, column=0, sticky="w", padx=10, pady=10)
 rcs_entry = tkinter.Entry(root)
 rcs_entry.grid(row=4, column=1, pady=10)
-rcs_entry.insert(0, "1")  # Insert default value of 1
+rcs_entry.bind("<FocusIn>", lambda event: reset_entry(event, rcs_entry))
 rcs_unit = tkinter.StringVar()
 rcs_unit.set("m\u00B2")
 rcs_unit_menu = ttk.Combobox(root,
@@ -286,7 +278,7 @@ tkinter.Label(root,
         ).grid(row=5, column=0, sticky="w", padx=10, pady=10)
 range_entry = tkinter.Entry(root)
 range_entry.grid(row=5, column=1, pady=10)
-range_entry.insert(0, "1")  # Insert default value of 1
+range_entry.bind("<FocusIn>", lambda event: reset_entry(event, range_entry))
 range_unit = tkinter.StringVar()
 range_unit.set("NMI")
 range_unit_menu = ttk.Combobox(root,
@@ -365,6 +357,3 @@ ax.set_xlabel(f"Range ({plot_x_unit.get()})")
 ax.set_ylabel(f"Received Power {plot_y_unit.get()}")
 
 root.mainloop()
-
-1811639599627927.5
-1811639599627.9275
