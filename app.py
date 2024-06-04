@@ -99,28 +99,43 @@ def validate_entry(entry):
     value = entry.get()
     if not value or float(value) == 0:
         entry.delete(0, tkinter.END)
-        entry.insert(0, "Enter a nonzero number")
+        entry.insert(0, "invalid input")
         entry.config(fg="red")
         return False
     entry.config(fg="black")
     return True
 
 def reset_entry(event, entry):
-    entry.delete(0, tkinter.END)
-    entry.config(fg="black")
+    if entry.get() == "invalid input" or float(entry.get()) == 1:
+        entry.delete(0, tkinter.END)
+        entry.config(fg="black")
+    return
 
 def calculate_and_plot():
     ### Calculations ###
     print("\n*** LOGGED CALCULATION: ***\n")
 
-    if not (validate_entry(pwr_t_entry)  and
-            validate_entry(gain_t_entry) and
-            validate_entry(gain_r_entry) and
-            validate_entry(freq_entry)   and
-            validate_entry(rcs_entry)    and
-            validate_entry(range_entry)):
-        print("input error")
+    ### Unfocus text boxes after calculations ###
+    root.focus_set()
+    error = False
+    for entry in root.winfo_children():
+        if isinstance(entry, tkinter.Entry) and not isinstance(entry, ttk.Combobox):
+            print(entry)
+            if not validate_entry(entry):
+                error = True
+    
+    if error:
+        print("input error at \"invalid input\" values")
         return
+
+    # if not (validate_entry(pwr_t_entry)  and
+    #         validate_entry(gain_t_entry) and
+    #         validate_entry(gain_r_entry) and
+    #         validate_entry(freq_entry)   and
+    #         validate_entry(rcs_entry)    and
+    #         validate_entry(range_entry)):
+    #     print("input error")
+    #     return
 
     print(f"       {float(pwr_t_entry.get())} {pwr_t_unit.get()} * {float(gain_t_entry.get())} * {float(gain_r_entry.get())} * (c / {float(freq_entry.get())} {freq_unit.get()})^2 * {float(rcs_entry.get())} {rcs_unit.get()}")
     print(f"Pr = ---------------------------------------------")
@@ -192,9 +207,11 @@ tkinter.Label(root,
          text="Pt : Power Transmitted",
          font=default_font
         ).grid(row=0, column=0, sticky="w", padx=10, pady=10)
-pwr_t_entry = tkinter.Entry(root, fg="gray")
+pwr_t_entry = tkinter.Entry(root)
 pwr_t_entry.grid(row=0, column=1, pady=10)
+pwr_t_entry.insert(0, 1)
 pwr_t_entry.bind("<FocusIn>", lambda event: reset_entry(event, pwr_t_entry))
+
 pwr_t_unit = tkinter.StringVar()
 pwr_t_unit.set("dBW")
 pwr_t_unit_menu = ttk.Combobox(root,
@@ -215,6 +232,7 @@ tkinter.Label(root,
         ).grid(row=1, column=0, sticky="w", padx=10, pady=10)
 gain_t_entry = tkinter.Entry(root)
 gain_t_entry.grid(row=1, column=1, pady=10)
+gain_t_entry.insert(0, 1)
 gain_t_entry.bind("<FocusIn>", lambda event: reset_entry(event, gain_t_entry))
 
 ###############################################
@@ -226,6 +244,7 @@ tkinter.Label(root,
         ).grid(row=2, column=0, sticky="w", padx=10, pady=10)
 gain_r_entry = tkinter.Entry(root)
 gain_r_entry.grid(row=2, column=1, pady=10)
+gain_r_entry.insert(0, 1)
 gain_r_entry.bind("<FocusIn>", lambda event: reset_entry(event, gain_r_entry))
 
 ###############################################
@@ -237,6 +256,7 @@ tkinter.Label(root,
         ).grid(row=3, column=0, sticky="w", padx=10, pady=10)
 freq_entry = tkinter.Entry(root)
 freq_entry.grid(row=3, column=1, pady=10)
+freq_entry.insert(0, 1)
 freq_entry.bind("<FocusIn>", lambda event: reset_entry(event, freq_entry))
 freq_unit = tkinter.StringVar()
 freq_unit.set("GHz")
@@ -257,6 +277,7 @@ tkinter.Label(root,
         ).grid(row=4, column=0, sticky="w", padx=10, pady=10)
 rcs_entry = tkinter.Entry(root)
 rcs_entry.grid(row=4, column=1, pady=10)
+rcs_entry.insert(0, 1)
 rcs_entry.bind("<FocusIn>", lambda event: reset_entry(event, rcs_entry))
 rcs_unit = tkinter.StringVar()
 rcs_unit.set("m\u00B2")
@@ -278,6 +299,7 @@ tkinter.Label(root,
         ).grid(row=5, column=0, sticky="w", padx=10, pady=10)
 range_entry = tkinter.Entry(root)
 range_entry.grid(row=5, column=1, pady=10)
+range_entry.insert(0, 1)
 range_entry.bind("<FocusIn>", lambda event: reset_entry(event, range_entry))
 range_unit = tkinter.StringVar()
 range_unit.set("NMI")
