@@ -112,10 +112,7 @@ def reset_entry(event, entry):
     return
 
 def calculate_and_plot():
-    ### Calculations ###
-    print("\n*** LOGGED CALCULATION: ***\n")
-
-    ### Unfocus text boxes after calculations ###
+    # Check if all text fields have valid inputs
     root.focus_set()
     error = False
     for entry in root.winfo_children():
@@ -126,21 +123,14 @@ def calculate_and_plot():
     if error:
         print("input error at \"invalid input\" values")
         return
-
-    # if not (validate_entry(pwr_t_entry)  and
-    #         validate_entry(gain_t_entry) and
-    #         validate_entry(gain_r_entry) and
-    #         validate_entry(freq_entry)   and
-    #         validate_entry(rcs_entry)    and
-    #         validate_entry(range_entry)):
-    #     print("input error")
-    #     return
-
+    
+    # Initialize log calculation
+    print("\n*** LOGGED CALCULATION: ***\n")
     print(f"       {float(pwr_t_entry.get())} {pwr_t_unit.get()} * {float(gain_t_entry.get())} * {float(gain_r_entry.get())} * (c / {float(freq_entry.get())} {freq_unit.get()})^2 * {float(rcs_entry.get())} {rcs_unit.get()}")
     print(f"Pr = ---------------------------------------------")
     print(f"              (4pi)^3 * ({float(range_entry.get())} {range_unit.get()})^4")
 
-
+    # Variable setup
     pwr_t  = convert_to_W(float(pwr_t_entry.get()), pwr_t_unit.get())
     pwr_t_unit.set("W")
     gain_t = float(gain_t_entry.get())
@@ -148,9 +138,14 @@ def calculate_and_plot():
     freq   = convert_to_Hz(float(freq_entry.get()), freq_unit.get())
     freq_unit.set("Hz")
     rcs    = float(rcs_entry.get())
+    pwr_r_values = []
 
 
-    if plot_x_unit.get() == "NMI":
+    ########### Calculations ###########
+
+
+    # Convert range to expected x-unit
+    if   plot_x_unit.get() == "NMI":
         range  = convert_to_NMI(float(range_entry.get()), range_unit.get())
         r_unit = "NMI"
     elif plot_x_unit.get() == "mi":
@@ -162,10 +157,9 @@ def calculate_and_plot():
     else:
         range  = convert_to_m(float(range_entry.get()), range_unit.get())
         r_unit = "m"
+    range_values = np.linspace(1, range, 400)
 
-    range_values = np.linspace(1, range, 100)
-    pwr_r_values = []
-
+    # Calculate [range, pwr_r] pairs
     for r in range_values:
         pwr_r = radar_range_equation(pwr_t, gain_t, gain_r, freq, rcs, convert_to_m(r, r_unit))
 
@@ -178,11 +172,14 @@ def calculate_and_plot():
         
         pwr_r_values.append(pwr_r)
 
+    # Log output calculation
     print(f"\n   = {pwr_r_values[len(pwr_r_values) - 1]} {plot_y_unit.get()}")
-
     print(f"\n----------------------------------------------------------------")
 
-    ### Plot ###
+
+    ########### Plot ###########
+
+    # Clear, initialize, and plot graph
     fig.clear()
     ax = fig.add_subplot(111)
     ax.plot(range_values, pwr_r_values, label="Received Power")
@@ -191,8 +188,11 @@ def calculate_and_plot():
     ax.set_xlabel(f"Range ({plot_x_unit.get()})")
     ax.set_ylabel(f"Received Power {plot_y_unit.get()}")
     ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
-    ax.legend()
+    ax.grid(True)
+    ax.legend(loc="upper right")
+    pwr_r_out.config(text=f"{pwr_r_values[len(pwr_r_values) - 1]:.4e}  {plot_y_unit.get()}")
     canvas.draw()
+
 
 ###################################### GUI Setup ########################################
 
@@ -210,7 +210,6 @@ pwr_t_entry = tkinter.Entry(root)
 pwr_t_entry.grid(row=0, column=1, pady=10)
 pwr_t_entry.insert(0, 1)
 pwr_t_entry.bind("<FocusIn>", lambda event: reset_entry(event, pwr_t_entry))
-
 pwr_t_unit = tkinter.StringVar()
 pwr_t_unit.set("dBW")
 pwr_t_unit_menu = ttk.Combobox(root,
@@ -300,6 +299,7 @@ range_entry = tkinter.Entry(root)
 range_entry.grid(row=5, column=1, pady=10)
 range_entry.insert(0, 1)
 range_entry.bind("<FocusIn>", lambda event: reset_entry(event, range_entry))
+
 range_unit = tkinter.StringVar()
 range_unit.set("NMI")
 range_unit_menu = ttk.Combobox(root,
@@ -357,21 +357,38 @@ plot_y_unit_menu.grid(row=4, column=4, sticky="w")
 
 ###############################################
 
+# Output
+tkinter.Label(root,
+         text="",
+         font=default_font
+        ).grid(row=6, column=0)
 
+tkinter.Label(root,
+         text="Pr : Power Received",
+         font=default_font
+        ).grid(row=7, column=0, sticky="w", padx=10, pady=10)
+
+pwr_r_out = tkinter.Label(root,
+         text="",
+         font=default_font
+        )
+pwr_r_out.grid(row=7, column=1, sticky="w", padx=10, pady=10)
 
 
 ###################################### App Loop ########################################
 
+
 # Matplotlib figure setup
 fig = pyplot.Figure()
 canvas = FigureCanvasTkAgg(fig, master=root)
-canvas.get_tk_widget().grid(row=8, columnspan=5)
+canvas.get_tk_widget().grid(row=9, columnspan=5)
 
 ax = fig.add_subplot(111)
-ax.plot(190, 1, label="Received Power")
-ax.plot(190, 1, label="Noise Jammer")
-ax.plot(190, 1, label="Repeater Jammer")
-ax.legend()
+ax.grid(True)
+ax.plot(1, 1, label="Received Power")
+ax.plot(0, 0, label="Noise Jammer")
+ax.plot(0, 0, label="Repeater Jammer")
+ax.legend(loc="upper right")
 canvas.draw()
 
 ax.set_xlabel(f"Range ({plot_x_unit.get()})")
