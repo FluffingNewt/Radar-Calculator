@@ -116,15 +116,12 @@ def calculate_and_plot():
     if plot_x_unit.get() == "NMI":
         range  = convert_to_NMI(float(range_entry.get()), range_unit.get())
         r_unit = "NMI"
-
     elif plot_x_unit.get() == "mi":
         range  = convert_to_mi(float(range_entry.get()), range_unit.get())
         r_unit = "mi"
-
     elif plot_x_unit.get() == "ft":
         range  = convert_to_ft(float(range_entry.get()), range_unit.get())
         r_unit = "ft"
-
     else:
         range  = convert_to_m(float(range_entry.get()), range_unit.get())
         r_unit = "m"
@@ -137,16 +134,15 @@ def calculate_and_plot():
 
         if plot_y_unit.get() == "dBW":
             pwr_r  = convert_to_dBW(pwr_r, "W")
-            
         elif plot_y_unit.get() == "dBm":
             pwr_r  = convert_to_dBm(pwr_r, "W")
-
         elif plot_y_unit.get() == "mW":
             pwr_r  = convert_to_mW(pwr_r,  "W")
         
         pwr_r_values.append(pwr_r)
 
     print(f"\n   = {pwr_r_values[len(pwr_r_values) - 1]} {plot_y_unit.get()}")
+
     print(f"\n----------------------------------------------------------------")
 
     ### Plot ###
@@ -316,9 +312,6 @@ plot_y_unit_menu = ttk.Combobox(root,
                                width=6)
 plot_y_unit_menu.grid(row=4, column=4, sticky="w")
 
-###############################################
-
-
 
 
 ###################################### App Loop ########################################
@@ -339,6 +332,3 @@ ax.set_xlabel(f"Range ({plot_x_unit.get()})")
 ax.set_ylabel(f"Received Power {plot_y_unit.get()}")
 
 root.mainloop()
-
-1811639599627927.5
-1811639599627.9275
