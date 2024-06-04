@@ -120,7 +120,6 @@ def calculate_and_plot():
     error = False
     for entry in root.winfo_children():
         if isinstance(entry, tkinter.Entry) and not isinstance(entry, ttk.Combobox):
-            print(entry)
             if not validate_entry(entry):
                 error = True
     
