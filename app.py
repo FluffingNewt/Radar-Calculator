@@ -57,7 +57,7 @@ def calculate_and_plot():
 
     # Calculate [range, pwr_r] pairs
     for r in range_values:
-        pwr_r = f.rre(pwr_t, gain_t, gain_r, freq, rcs, f.convert_to_m(r, r_unit))
+        pwr_r = f.rre_pr(pwr_t, gain_t, gain_r, freq, rcs, f.convert_to_m(r, r_unit))
 
         if plot_y_unit.get() == "dBW":
             pwr_r  = f.convert_to_dBW(pwr_r, "W")

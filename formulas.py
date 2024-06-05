@@ -2,9 +2,11 @@ import math
 
 units_NMI  = ["NMI", "mi", "m", "ft"]
 units_dBW  = ["dBW", "dBm", "W", "mW"]
-units_rcs  = ["m\u00B2"]
 units_GHz  = ["GHz", "MHz", "Hz", "kHz"]
+units_rcs  = ["m\u00B2"]
 
+
+###### Conversions ######
 
 def convert_to_NMI(value, unit):
     value = float(value)
@@ -76,9 +78,51 @@ def convert_to_Hz(value, unit):
     else               : return value # Passthrough
 
 
-def rre(pwr_t, gain_t, gain_r, freq, rcs, range):
-    wavelength = 299792458.0 / freq
-    numer = pwr_t * gain_t * gain_r * (wavelength ** 2) * rcs
-    denom = (4 * math.pi) ** 3 * (range ** 4)
+####### Formulas #######
+
+def rre_pr(pt, gt, gr, f, rcs, r):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w**2) * rcs
+    denom = (4 * math.pi)**3 * (r**4)
     return numer / denom
 
+
+def rre_pt(pr, gt, gr, f, rcs, r):
+    w = 299792458.0 / f
+    numer = pr * (4 * math.pi)**3 * (r**4)
+    denom =  gt * gr * (w**2) * rcs
+    return numer / denom
+
+
+def rre_gt(pr, pt, gr, f, rcs, r):
+    w = 299792458.0 / f
+    numer = pr * (4 * math.pi)**3 * (r**4)
+    denom =  pt * gr * (w**2) * rcs
+    return numer / denom
+
+
+def rre_gr(pr, pt, gt, f, rcs, r):
+    w = 299792458.0 / f
+    numer = pr * (4 * math.pi)**3 * (r**4)
+    denom =  pt * gt * (w**2) * rcs
+    return numer / denom
+
+
+def rre_f(pr, pt, gt, gr, rcs, r):
+    numer = pr * (4 * math.pi)**3 * (r**4)
+    denom =  pt * gt * gr * rcs
+    return 299792458.0 / ((numer / denom)**0.5)
+
+
+def rre_rcs(pr, pt, gt, gr, f, r):
+    w = 299792458.0 / f
+    numer = pr * (4 * math.pi)**3 * (r**4)
+    denom =  pt * gt * gr * (w**2)
+    return numer / denom
+
+
+def rre_r(pr, pt, gt, gr, f, rcs):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w ** 2) * rcs
+    denom =  pr * (4 * math.pi)**3
+    return (numer / denom)**0.25
