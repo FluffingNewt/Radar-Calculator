@@ -7,187 +7,374 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from matplotlib.ticker import ScalarFormatter
 
+#! Incomplete
+class Graph:
+
+    graph_types = ["pr", "nj", "rj"]
+
+    x_values = []
+    y_values = []
+
+    def __init__(self, graph_type, invalid,
+                 pwr_r, pwr_r_u,
+                 pwr_t, pwr_t_u,
+                 gain_t, gain_r,
+                 freq, freq_u,
+                 rcs, rcs_u,
+                 r, r_u):
+
+        if invalid: return
+
+        self.graph_type = graph_type
+
+        if pwr_t.get() =="":
+            return
+        elif gain_t.get() =="":
+            return
+        elif gain_r.get() =="":
+            return
+        elif freq.get() =="":
+            return
+        elif rcs.get() =="":
+            return
+        elif r.get() =="":
+            return
+        
+        else: # if pwr_r == "" or calculate like normal
+            if pwr_r.get() != "": pr_entries[self.graph_type].delete(0, tkinter.END)
+
+            self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
+            self.gain_t = float(gain_t.get())
+            self.gain_r = float(gain_r.get())
+            self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
+            self.r      = f.convert_to_m(r.get(), r_u.get())
+
+        
+            # Calculate pwr_t values for the selected graph_type
+            #! Will probably need to update this to new 1 way jamming formulas, shouldnt affect much
+            if   self.graph_type == "rj" : pwr_t_values = numpy.linspace(1, self.pwr_t, 400)
+            else                         : pwr_t_values = numpy.linspace(self.pwr_t, self.pwr_t, 400)
+            
+            # init x and y value arrays
+            self.x_values = numpy.linspace(1, self.r, 400)
+            self.y_values = []
+
+            # generate x and y values
+            i = 0
+            for range in self.x_values:
+                pr = f.rre_pr(pwr_t_values[i], self.gain_t, self.gain_r, self.freq, self.rcs, range)   
+                self.y_values.append(pr)
+                i += 1
+            
+            # Set pwr_r value
+            pr = self.y_values[len(self.y_values) - 1]
+            if   pwr_r_u.get() == "dBW" : self.pwr_r = f.convert_to_dBW(pr, "W")
+            elif pwr_r_u.get() == "dBm" : self.pwr_r = f.convert_to_dBm(pr, "W")
+            elif pwr_r_u.get() == "W"   : self.pwr_r = f.convert_to_W(pr, "W")
+            elif pwr_r_u.get() == "mW"  : self.pwr_r = f.convert_to_mW(pr, "W")
+            pr_entries[self.graph_type].insert(0, f"{self.pwr_r:.4f}")
+
+
+            print(f"X[0]: {self.x_values[0]}  m")
+            print(f"Y[0]: {self.y_values[0]}  W\n")
+
+            print(f"X[399]: {self.x_values[399]}  m")
+            print(f"Y[399]: {self.y_values[399]}  W\n")
+
+            print(f"converting to: {plot_x_unit.get()}")
+            self.convert_x_values(plot_x_unit.get())
+            
+            print(f"converting to: {plot_y_unit.get()}")
+            self.convert_y_values(plot_y_unit.get())
+
+            print(f"X[0]: {self.x_values[0]}  {plot_x_unit.get()}")
+            print(f"Y[0]: {self.y_values[0]}  {plot_y_unit.get()}\n")
+
+            print(f"X[399]: {self.x_values[399]}  {plot_x_unit.get()}")
+            print(f"Y[399]: {self.y_values[399]}  {plot_y_unit.get()}\n")
+
+        
+
+
+    def convert_x_values(self, unit):
+        if unit == "m": return
+
+        new_x_values = []
+        for val in self.x_values:
+
+            if   unit == "NMI" : val = f.convert_to_NMI(val, "m")
+            elif unit == "mi"  : val = f.convert_to_mi(val, "m")
+            elif unit == "ft"  : val = f.convert_to_ft(val, "m")
+
+            new_x_values.append(val)
+        
+        self.x_values = new_x_values
+
+
+    def convert_y_values(self, unit):
+        new_y_values = []
+
+        for val in self.y_values:
+
+            if   unit == "dBW" : val = f.convert_to_dBW(val, "W")
+            elif unit == "dBm" : val = f.convert_to_dBm(val, "W")
+            elif unit == "mW"  : val = f.convert_to_mW(val, "W")
+
+            new_y_values.append(val)
+        
+        self.y_values = new_y_values
+
 
 ##################################### Calculations ######################################
 
-units_NMI  = ["NMI", "mi", "m", "ft"]
-units_dBW  = ["dBW", "dBm", "W", "mW"]
-units_rcs  = ["m\u00B2"]
-units_GHz  = ["GHz", "MHz", "Hz", "kHz"]
-
 def calculate_and_plot():
+    pr_error = False
+    nj_error = False
+    rj_error = False
+
     # Check if all text fields have valid inputs
-    error = False
-    for entry in root.winfo_children():
-        if isinstance(entry, tkinter.Entry) and not isinstance(entry, ttk.Combobox):
-            if entry.grid_info()["row"] == 7 and entry.grid_info()["column"] == 1:
-                continue
-            elif not validate_entry(entry):
-                error = True
-    
-    if error:
-        print('input error at "invalid input" values')
-        return
+    # for i in range(1, 6, 2):
+    #     if   i == 1: pr_error = validate_entries(i)
+    #     elif i == 3: nj_error = validate_entries(i)
+    #     elif i == 5: rj_error = validate_entries(i)
+
 
     root.focus_set()
 
-    # Variable setup
-    pwr_t  = f.convert_to_W(pwr_t_entry.get(), pwr_t_unit.get())
-    gain_t = float(gain_t_entry.get())
-    gain_r = float(gain_r_entry.get())
-    freq   = f.convert_to_Hz(freq_entry.get(), freq_unit.get())
-    rcs    = float(rcs_entry.get())
-    pwr_r_values = []
-
-    # Convert range to expected x-unit
-    if   plot_x_unit.get() == "NMI":
-        range  = f.convert_to_NMI(range_entry.get(), range_unit.get())
-        r_unit = "NMI"
-    elif plot_x_unit.get() == "mi":
-        range  = f.convert_to_mi(range_entry.get(), range_unit.get())
-        r_unit = "mi"
-    elif plot_x_unit.get() == "ft":
-        range  = f.convert_to_ft(range_entry.get(), range_unit.get())
-        r_unit = "ft"
-    else:
-        range  = f.convert_to_m(range_entry.get(), range_unit.get())
-        r_unit = "m"
-
-    range_values = numpy.linspace(1, range, 400)
-
-    # Calculate [range, pwr_r] pairs
-    for r in range_values:
-        pwr_r = f.rre_pr(pwr_t, gain_t, gain_r, freq, rcs, f.convert_to_m(r, r_unit))
-
-        if plot_y_unit.get() == "dBW":
-            pwr_r  = f.convert_to_dBW(pwr_r, "W")
-        elif plot_y_unit.get() == "dBm":
-            pwr_r  = f.convert_to_dBm(pwr_r, "W")
-        elif plot_y_unit.get() == "mW":
-            pwr_r  = f.convert_to_mW(pwr_r,  "W")
-        
-        pwr_r_values.append(pwr_r)
+    graph_pr = Graph("pr", pr_error,
+                     pr_entries["pr"] , pr_units["pr"],
+                     pt_entries["pr"] , pt_units["pr"],
+                     gt_entries["pr"] , gr_entries["pr"],
+                     f_entries["pr"]  , f_units["pr"],
+                     rcs_entries["pr"], rcs_units["pr"],
+                     r_entries["pr"]  , r_units["pr"])
+    
+    # graph_nj = Graph("nj", nj_error, 
+    #                  pr_entries["nj"] , pr_units["nj"],
+    #                  pt_entries["nj"] , pt_units["nj"],
+    #                  gt_entries["nj"] , gr_entries["nj"],
+    #                  f_entries["nj"]  , f_units["nj"],
+    #                  rcs_entries["nj"], rcs_units["nj"],
+    #                  r_entries["nj"]  , r_units["nj"])
+    
+    # graph_rj = Graph("nj", rj_error, 
+    #                  pr_entries["rj"] , pr_units["rj"],
+    #                  pt_entries["rj"] , pt_units["rj"],
+    #                  gt_entries["rj"] , gr_entries["rj"],
+    #                  f_entries["rj"]  , f_units["rj"],
+    #                  rcs_entries["rj"], rcs_units["rj"],
+    #                  r_entries["rj"]  , r_units["rj"])
 
     # Log output calculation
-    print(f"\nPr = {pwr_r_values[len(pwr_r_values) - 1]} {plot_y_unit.get()}")
+    print(f"\nPr = {graph_pr.y_values[len(graph_pr.y_values) - 1]} {plot_y_unit.get()}")
 
     # Clear, initialize, and plot graph
     fig.clear()
     ax = fig.add_subplot(111)
-    ax.plot(range_values, pwr_r_values, label="Received Power")
+    ax.plot(graph_pr.x_values, graph_pr.y_values, label="Received Power")
     # ax.plot(range, 10 * numpy.log10(pwr_n), label="Noise Jammer")
     # ax.plot(range, 10 * numpy.log10(P_range_j), label="Repeater Jammer")
     ax.set_xlabel(f"Range ({plot_x_unit.get()})")
     ax.set_ylabel(f"Received Power {plot_y_unit.get()}")
-    ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
+    # ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
     ax.legend(loc="upper right")
-    pwr_r_entry.delete(0, tkinter.END)
-    pwr_r_entry.insert(0, f"{pwr_r_values[len(pwr_r_values) - 1]:.4f}")
     canvas.draw()
 
 
 ###################################### GUI Setup ########################################
 
-def validate_entry(entry):
-    value = entry.get()
-    if not value or \
-        value == "0" or \
-        value == "0.0" or \
-        any(char.isalpha() for char in value) or \
-        any(char in value for char in "[$&+,:;=?@#|'\"<>-_^*()%!]") or \
-        ("." in value and value == "."):
+def validate_entries(column):
+    blank_entries = []
+    error_found = False
+
+    # Loop through all children of the root window
+    for child in root.winfo_children():
+        if isinstance(child, tkinter.Entry):
+            info = child.grid_info()
+            if info['column'] == column and info['row'] <= 7:
+                value = child.get()
+
+                if any(char.isalpha() for char in value) or \
+                   any(char in value for char in "[$&+,:;=?@#|'\"<>-_^*()%!]") or \
+                   value in ["0", "0.0"]:
+                    print(f"Error: Invalid input '{value}' in row {info['row']}")
+                    child.delete(0, tkinter.END)
+                    child.insert(0, "invalid input")
+                    child.config(fg="red")
+                    error_found = True
+                elif value == "":
+                    blank_entries.append(child)
+
+    # Handle multiple blank entries
+    if len(blank_entries) > 1:
+        for entry in blank_entries:
             entry.delete(0, tkinter.END)
             entry.insert(0, "invalid input")
             entry.config(fg="red")
-            return False
-    
-    entry.config(fg="black")
-    return True
+            error_found = True
+
+    return error_found
+
 
 def reset_entry(event, entry):
-    if (entry.get() == "invalid input") or (entry.get() == "1"):
+    if entry.get() == "invalid input":
         entry.delete(0, tkinter.END)
         entry.config(fg="black")
 
-def create_label(root, text, row, column, font, padx=10, pady=10, sticky="w"):
-    label = tkinter.Label(root, text=text, font=font)
-    label.grid(row=row, column=column, padx=padx, pady=pady, sticky=sticky)
+
+def create_label(root, text, row, column, padx=10, pady=5, sticky="w", columnspan=1):
+    label = tkinter.Label(root, text=text, font=default_font)
+    label.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady, sticky=sticky)
     return label
 
-def create_entry(root, row, column, default_value=1, pady=10):
+
+def create_entry(root, row, column, padx=0 , pady=10):
     entry = tkinter.Entry(root)
-    entry.grid(row=row, column=column, pady=pady)
-    entry.insert(0, default_value)
+    entry.grid(row=row, column=column, padx=padx, pady=pady, sticky="w")
     entry.bind("<FocusIn>", lambda event: reset_entry(event, entry))
     return entry
 
-def create_combobox(root, textvariable, values, row, column, font, width=6, pady=10):
-    combobox = ttk.Combobox(root, textvariable=textvariable, values=values, font=font, state="readonly", width=width)
-    combobox.grid(row=row, column=column, pady=pady)
+
+def create_combobox(root, textvariable, values, row, column, width=6, pady=10, sticky=""):
+    combobox = ttk.Combobox(root, textvariable=textvariable, values=values, font=default_font, state="readonly", width=width)
+    combobox.grid(row=row, column=column, pady=pady, sticky=sticky)
     return combobox
+
+
+def create_separator(root, orient, row, column, rowspan, columnspan, sticky, padx=0, pady=0):
+    separator = ttk.Separator(root, orient=orient)
+    separator.grid(row=row, column=column, rowspan=rowspan, columnspan=columnspan, sticky=sticky, padx=padx, pady=pady)
+
 
 # Root
 root = tkinter.Tk()
+root.geometry("870x870")
 root.title("Radar Range Equation Calculator")
 default_font = ('Product Sans', 13)
 
+
+create_label(root, "Received Power", 0, 0, 10, 5, "ew", 3)
+create_label(root, "Noise Jammer", 0, 3, 10, 5, "ew", 2)
+create_label(root, "Repeater Jammer", 0, 5, 10, 5, "ew", 2)
+
 # Power Transmitted
-create_label(root, "Pt : Power Transmitted", 0, 0, default_font)
-pwr_t_entry = create_entry(root, 0, 1)
-pwr_t_unit = tkinter.StringVar(value="dBW")
-create_combobox(root, pwr_t_unit, units_dBW, 0, 2, default_font)
+row = 2
+col = 0
+pt_entries = {}
+pt_units = {}
+col_count = 1
+i = 0
+create_label(root, "Pt : Power Transmitted", row, col)
+for type in Graph.graph_types:
+    pt_entries[type] = create_entry(root, row, col+1, 10)
+    pt_units[type] = tkinter.StringVar(value="dBW")
+    create_combobox(root, pt_units[type], f.units_dBW, row, col+2)
+    
+    if i != len(Graph.graph_types) - 1:
+        create_separator(root, "vertical", 0, col+3, 11, 1, "nsw", 5)
+    i += 1
+    col += 2
+    col_count += 3
 
 # Gain Transmitted
-create_label(root, "Gt : Gain Transmitted", 1, 0, default_font)
-gain_t_entry = create_entry(root, 1, 1)
+row = 3
+col = 0
+gt_entries = {}
+create_label(root, "Gt : Gain Transmitted", row, col)
+for type in Graph.graph_types:
+    gt_entries[type] = create_entry(root, row, col+1, 10)
+    col += 2
 
 # Gain Received
-create_label(root, "Gr : Gain Received", 2, 0, default_font)
-gain_r_entry = create_entry(root, 2, 1)
+row = 4
+col = 0
+gr_entries = {}
+create_label(root, "Gr : Gain Received", row, col)
+for type in Graph.graph_types:
+    gr_entries[type] = create_entry(root, row, col+1, 10)
+    col += 2
+    col_count += 1
 
 # Frequency
-create_label(root, "\u03BD : Frequency", 3, 0, default_font)
-freq_entry = create_entry(root, 3, 1)
-freq_unit = tkinter.StringVar(value="GHz")
-create_combobox(root, freq_unit, units_GHz, 3, 2, default_font)
+row = 5
+col = 0
+f_entries = {}
+f_units = {}
+create_label(root, "\u03BD : Frequency", row, col)
+for type in Graph.graph_types:
+    f_entries[type] = create_entry(root, row, col+1, 10)
+    f_units[type] = tkinter.StringVar(value="GHz")
+    create_combobox(root, f_units[type], f.units_GHz, row, col+2)
+    col += 2
 
 # RCS
-create_label(root, "\u03C3 : Radar Cross Section", 4, 0, default_font)
-rcs_entry = create_entry(root, 4, 1)
-rcs_unit = tkinter.StringVar(value="m\u00B2")
-create_combobox(root, rcs_unit, units_rcs, 4, 2, default_font)
+row = 6 
+col = 0
+rcs_entries = {}
+rcs_units = {}
+create_label(root, "\u03C3 : Radar Cross Section", row, col)
+for type in Graph.graph_types:
+    rcs_entries[type] = create_entry(root, row, col+1, 10)
+    rcs_units[type] = tkinter.StringVar(value="m\u00B2")
+    create_combobox(root, rcs_units[type], f.units_rcs, row, col+2)
+    col += 2
 
 # Range
-create_label(root, "R : Range", 5, 0, default_font)
-range_entry = create_entry(root, 5, 1)
-range_unit = tkinter.StringVar(value="NMI")
-create_combobox(root, range_unit, units_NMI, 5, 2, default_font)
+row = 7
+col = 0
+r_entries = {}
+r_units = {}
+create_label(root, "R : Range", row, col)
+for type in Graph.graph_types:
+    r_entries[type] = create_entry(root, row, col+1, 10)
+    r_units[type] = tkinter.StringVar(value="NMI")
+    create_combobox(root, r_units[type], f.units_NMI, row, col+2)
+    col += 2
 
-# Plot Button
-btn_plot = tkinter.Button(root, text="Plot", command=calculate_and_plot, font=default_font)
-btn_plot.grid(row=7, column=3, sticky="e")
+# Power Received
+row = 9
+col = 0
+pr_entries = {}
+pr_units = {}
+create_label(root, "Pr : Power Received", row, col, 10, 10)
+for type in Graph.graph_types:
+    pr_entries[type] = create_entry(root, row, col+1, 10)
+    pr_units[type] = tkinter.StringVar(value="dBW")
+    create_combobox(root, pr_units[type], f.units_dBW, row, col+2)
+    col += 2
 
 # x Unit
+row = 11
+col = 0
+frame = tkinter.Frame(root)
+frame.grid(row=row, column=col, columnspan=1, rowspan=1, sticky="n")
 plot_x_unit = tkinter.StringVar(value="NMI")
-create_label(root, "x Unit", 4, 3, default_font, sticky="w")
-create_combobox(root, plot_x_unit, units_NMI, 4, 4, default_font)
+row = 0
+col = 0
+create_label(frame, "x Unit", row, col)
+create_combobox(frame, plot_x_unit, f.units_NMI, row, col+1)
 
 # y Unit
 plot_y_unit = tkinter.StringVar(value="dBW")
-create_label(root, "y Unit", 5, 3, default_font, sticky="w")
-create_combobox(root, plot_y_unit, units_dBW, 5, 4, default_font)
+create_label(frame, "y Unit", row+1, col)
+create_combobox(frame, plot_y_unit, f.units_dBW, row+1, col+1)
 
-# Power Received
-create_label(root, "", 6, 0, default_font, 0, 0)
-create_label(root, "Pr : Power Received", 7, 0, default_font, padx=10, pady=10)
-pwr_r_entry = create_entry(root, 7, 1, "")
-pwr_r_unit = tkinter.StringVar(value="")
-create_combobox(root, pwr_r_unit, units_dBW, 7, 2, default_font)
+# Plot Button
+btn_plot = tkinter.Button(frame, text="Plot", command=calculate_and_plot, font=default_font)
+btn_plot.grid(row=row+2, column=col, columnspan=2, sticky="s")
+
+# Separator
+create_label(root, "", 10, 0, 10, 10, "")
+create_separator(root, "horizontal", 1, 0, 1, col_count+3, "ew")
+create_separator(root, "horizontal", 8, 0, 1, col_count+3, "ew", 0, 0)
 
 # Matplotlib figure setup
-fig = Figure()
+row = 11
+col = 1
+fig = Figure(layout="tight")
 canvas = FigureCanvasTkAgg(fig, master=root)
-canvas.get_tk_widget().grid(row=9, columnspan=5)
+canvas.get_tk_widget().grid(row=11, column=col, columnspan=6, sticky="ew")
 
 ax = fig.add_subplot(111)
 ax.plot(1, 1, label="Received Power")

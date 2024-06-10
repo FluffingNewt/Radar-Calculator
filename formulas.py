@@ -3,30 +3,30 @@ import math
 units_NMI  = ["NMI", "mi", "m", "ft"]
 units_dBW  = ["dBW", "dBm", "W", "mW"]
 units_GHz  = ["GHz", "MHz", "Hz", "kHz"]
-units_rcs  = ["m\u00B2"]
+units_rcs  = ["m\u00B2", "ft\u00B2"]
 
 
 ###### Conversions ######
 
 def convert_to_NMI(value, unit):
     value = float(value)
-    if   unit == "mi" : return value * 0.868976242
+    if   unit == "mi" : return value / 1.15078
     elif unit == "m"  : return value / 1852.0
-    elif unit == "ft" : return value * (1.64578834 * 10.0e-4)
+    elif unit == "ft" : return value / 6076.11549
     else              : return value # Passthrough
 
 
 def convert_to_mi(value, unit):
     value = float(value)
     if   unit == "NMI" : return value * 1.15078
-    elif unit == "m"   : return value * 6.21e-4
-    elif unit == "ft"  : return value / 5280
+    elif unit == "m"   : return value / 1609.344
+    elif unit == "ft"  : return value / 5280.0
     else               : return value # Passthrough
 
 
 def convert_to_m(value, unit):
     value = float(value)
-    if   unit == "NMI" : return value * 1852
+    if   unit == "NMI" : return value * 1852.0
     elif unit == "mi"  : return value * 1609.344
     elif unit == "ft"  : return value * 0.3048
     else               : return value # Passthrough
@@ -34,9 +34,9 @@ def convert_to_m(value, unit):
 
 def convert_to_ft(value, unit):
     value = float(value)
-    if   unit == "NMI" : return value * 6076.12
-    elif unit == "mi"  : return value * 5280 
-    elif unit == "m"   : return value * 3.28084
+    if   unit == "NMI" : return value * 6076.11549
+    elif unit == "mi"  : return value * 5280.0
+    elif unit == "m"   : return value / 0.3048
     else               : return value # Passthrough
 
 
@@ -77,6 +77,11 @@ def convert_to_Hz(value, unit):
     elif unit == "kHz" : return value * 1.0e3
     else               : return value # Passthrough
 
+
+def convert_to_m2(value, unit):
+    value = float(value)
+    if   unit == "ft\u00B2" : return value / 10.7639
+    else                    : return value # Passthrough
 
 ####### Formulas #######
 
