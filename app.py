@@ -11,9 +11,8 @@ from matplotlib.ticker import ScalarFormatter
 class Graph:
 
     graph_types = ["pr", "nj", "rj"]
-
-    x_values = []
-    y_values = []
+    x_values    = []
+    y_values    = []
 
     def __init__(self, graph_type, invalid,
                  pwr_r, pwr_r_u,
@@ -27,18 +26,95 @@ class Graph:
 
         self.graph_type = graph_type
 
-        if pwr_t.get() =="":
-            return
-        elif gain_t.get() =="":
-            return
-        elif gain_r.get() =="":
-            return
-        elif freq.get() =="":
-            return
-        elif rcs.get() =="":
-            return
-        elif r.get() =="":
-            return
+        if pwr_t.get() == "":
+            self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
+            self.gain_t = float(gain_t.get())
+            self.gain_r = float(gain_r.get())
+            self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
+            self.r      = f.convert_to_m(r.get(), r_u.get())
+            
+            self.pwr_t = f.rre_pt(self.pwr_r, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
+
+            if   pwr_t_u.get() == "dBW" : self.pwr_t = f.convert_to_dBW(self.pwr_t, "W")
+            elif pwr_t_u.get() == "dBm" : self.pwr_t = f.convert_to_dBm(self.pwr_t, "W")
+            elif pwr_t_u.get() == "W"   : self.pwr_t = f.convert_to_W(self.pwr_t, "W")
+            elif pwr_t_u.get() == "mW"  : self.pwr_t = f.convert_to_mW(self.pwr_t, "W")
+
+            pt_entries[self.graph_type].insert(0, f"{self.pwr_t}")
+
+        elif gain_t.get() == "":
+            self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
+            self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
+            self.gain_r = float(gain_r.get())
+            self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
+            self.r      = f.convert_to_m(r.get(), r_u.get())
+
+            self.gain_t = f.rre_gt(self.pwr_r, self.pwr_t, self.gain_r, self.freq, self.rcs, self.r)
+
+            gt_entries[self.graph_type].insert(0, f"{self.gain_t}")
+
+        elif gain_r.get() == "":
+            self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
+            self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
+            self.gain_t = float(gain_t.get())
+            self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
+            self.r      = f.convert_to_m(r.get(), r_u.get())
+
+            self.gain_r = f.rre_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.rcs, self.r)
+
+            gr_entries[self.graph_type].insert(0, f"{self.gain_r}")
+        
+        elif freq.get() == "":
+            self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
+            self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
+            self.gain_t = float(gain_t.get())
+            self.gain_r = float(gain_r.get())
+            self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
+            self.r      = f.convert_to_m(r.get(), r_u.get())
+
+            self.freq = f.rre_f(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.rcs, self.r)
+
+            if   freq_u.get() == "GHz" : self.freq = f.convert_to_GHz(self.freq, "Hz")
+            elif freq_u.get() == "MHz" : self.freq = f.convert_to_MHz(self.freq, "Hz")
+            elif freq_u.get() == "kHz" : self.freq = f.convert_to_kHz(self.freq, "Hz")
+            elif freq_u.get() == "Hz"  : self.freq = f.convert_to_Hz(self.freq, "Hz")
+
+            f_entries[self.graph_type].insert(0, f"{self.freq}")
+        
+        elif rcs.get() == "":
+            self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
+            self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
+            self.gain_t = float(gain_t.get())
+            self.gain_r = float(gain_r.get())
+            self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.r      = f.convert_to_m(r.get(), r_u.get())
+
+            self.rcs = f.rre_rcs(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r)
+
+            if   rcs_u.get() == "m\u00B2"  : rcs = f.convert_to_m2(self.rcs, "m\u00B2")
+            elif rcs_u.get() == "ft\u00B2" : rcs = f.convert_to_ft2(self.rcs, "m\u00B2")
+
+            rcs_entries[self.graph_type].insert(0, f"{rcs}")
+        
+        elif r.get() == "":
+            self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
+            self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
+            self.gain_t = float(gain_t.get())
+            self.gain_r = float(gain_r.get())
+            self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
+
+            self.r = f.rre_r(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs)
+
+            if   r_u.get() == "NMI" : r = f.convert_to_NMI(self.r, "m")
+            elif r_u.get() == "mi"  : r = f.convert_to_mi(self.r, "m")
+            elif r_u.get() == "m"   : r = f.convert_to_m(self.r, "m")
+            elif r_u.get() == "ft"  : r = f.convert_to_ft(self.r, "m")
+
+            r_entries[self.graph_type].insert(0, f"{r}")
         
         else: # if pwr_r == "" or calculate like normal
             if pwr_r.get() != "": pr_entries[self.graph_type].delete(0, tkinter.END)
@@ -50,49 +126,33 @@ class Graph:
             self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
             self.r      = f.convert_to_m(r.get(), r_u.get())
 
+            self.pwr_r = f.rre_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
+
+            if   pwr_r_u.get() == "dBW" : pwr_r = f.convert_to_dBW(self.pwr_r, "W")
+            elif pwr_r_u.get() == "dBm" : pwr_r = f.convert_to_dBm(self.pwr_r, "W")
+            elif pwr_r_u.get() == "W"   : pwr_r = f.convert_to_W(self.pwr_r, "W")
+            elif pwr_r_u.get() == "mW"  : pwr_r = f.convert_to_mW(self.pwr_r, "W")
+
+            pr_entries[self.graph_type].insert(0, f"{pwr_r}")
         
-            # Calculate pwr_t values for the selected graph_type
-            #! Will probably need to update this to new 1 way jamming formulas, shouldnt affect much
-            if   self.graph_type == "rj" : pwr_t_values = numpy.linspace(1, self.pwr_t, 400)
-            else                         : pwr_t_values = numpy.linspace(self.pwr_t, self.pwr_t, 400)
-            
-            # init x and y value arrays
-            self.x_values = numpy.linspace(1, self.r, 400)
-            self.y_values = []
+        # Calculate pwr_t values for the selected graph_type
+        #! Will probably need to update this to new 1 way jamming formulas, shouldnt affect much
+        if   self.graph_type == "rj" : pwr_t_values = numpy.linspace(1, self.pwr_t, 400)
+        else                         : pwr_t_values = numpy.linspace(self.pwr_t, self.pwr_t, 400)
+        
+        # init x and y value arrays
+        self.x_values = numpy.linspace(1, self.r, 400)
+        self.y_values = []
 
-            # generate x and y values
-            i = 0
-            for range in self.x_values:
-                pr = f.rre_pr(pwr_t_values[i], self.gain_t, self.gain_r, self.freq, self.rcs, range)   
-                self.y_values.append(pr)
-                i += 1
-            
-            # Set pwr_r value
-            pr = self.y_values[len(self.y_values) - 1]
-            if   pwr_r_u.get() == "dBW" : self.pwr_r = f.convert_to_dBW(pr, "W")
-            elif pwr_r_u.get() == "dBm" : self.pwr_r = f.convert_to_dBm(pr, "W")
-            elif pwr_r_u.get() == "W"   : self.pwr_r = f.convert_to_W(pr, "W")
-            elif pwr_r_u.get() == "mW"  : self.pwr_r = f.convert_to_mW(pr, "W")
-            pr_entries[self.graph_type].insert(0, f"{self.pwr_r:.4f}")
+        # generate x and y values
+        i = 0
+        for range in self.x_values:
+            pr = f.rre_pr(pwr_t_values[i], self.gain_t, self.gain_r, self.freq, self.rcs, range)   
+            self.y_values.append(pr)
+            i += 1
 
-
-            print(f"X[0]: {self.x_values[0]}  m")
-            print(f"Y[0]: {self.y_values[0]}  W\n")
-
-            print(f"X[399]: {self.x_values[399]}  m")
-            print(f"Y[399]: {self.y_values[399]}  W\n")
-
-            print(f"converting to: {plot_x_unit.get()}")
-            self.convert_x_values(plot_x_unit.get())
-            
-            print(f"converting to: {plot_y_unit.get()}")
-            self.convert_y_values(plot_y_unit.get())
-
-            print(f"X[0]: {self.x_values[0]}  {plot_x_unit.get()}")
-            print(f"Y[0]: {self.y_values[0]}  {plot_y_unit.get()}\n")
-
-            print(f"X[399]: {self.x_values[399]}  {plot_x_unit.get()}")
-            print(f"Y[399]: {self.y_values[399]}  {plot_y_unit.get()}\n")
+        self.convert_x_values(plot_x_unit.get())
+        self.convert_y_values(plot_y_unit.get())
 
         
 

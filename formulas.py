@@ -70,6 +70,30 @@ def convert_to_mW(value, unit):
     else            : return value  # Passthrough
 
 
+def convert_to_GHz(value, unit):
+    value = float(value)
+    if   unit == "MHz" : return value / 1.0e3
+    elif unit == "kHz" : return value / 1.0e6
+    elif unit == "Hz"  : return value / 1.0e9
+    else               : return value # Passthrough
+
+
+def convert_to_MHz(value, unit):
+    value = float(value)
+    if   unit == "GHz" : return value * 1.0e3
+    elif unit == "kHz" : return value / 1.0e3
+    elif unit == "Hz"  : return value / 1.0e6
+    else               : return value # Passthrough
+
+
+def convert_to_kHz(value, unit):
+    value = float(value)
+    if   unit == "GHz" : return value * 1.0e6
+    elif unit == "MHz" : return value * 1.0e3
+    elif unit == "Hz" : return value / 1.0e3
+    else               : return value # Passthrough
+
+
 def convert_to_Hz(value, unit):
     value = float(value)
     if   unit == "GHz" : return value * 1.0e9
@@ -82,6 +106,12 @@ def convert_to_m2(value, unit):
     value = float(value)
     if   unit == "ft\u00B2" : return value / 10.7639
     else                    : return value # Passthrough
+
+
+def convert_to_ft2(value, unit):
+    value = float(value)
+    if   unit == "m\u00B2" : return value * 10.7639
+    else                   : return value # Passthrough
 
 ####### Formulas #######
 
