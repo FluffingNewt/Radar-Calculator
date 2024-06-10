@@ -5,7 +5,6 @@ import tkinter
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-from matplotlib.ticker import ScalarFormatter
 
 #! Incomplete
 class Graph:
@@ -14,14 +13,7 @@ class Graph:
     x_values    = []
     y_values    = []
 
-    def __init__(self, graph_type, invalid,
-                 pwr_r, pwr_r_u,
-                 pwr_t, pwr_t_u,
-                 gain_t, gain_r,
-                 freq, freq_u,
-                 rcs, rcs_u,
-                 r, r_u):
-
+    def __init__(self, graph_type, invalid,pwr_r, pwr_r_u, pwr_t, pwr_t_u, gain_t, gain_r, freq, freq_u, rcs, rcs_u, r, r_u):
         if invalid: return
 
         self.graph_type = graph_type
@@ -134,6 +126,9 @@ class Graph:
             elif pwr_r_u.get() == "mW"  : pwr_r = f.convert_to_mW(self.pwr_r, "W")
 
             pr_entries[self.graph_type].insert(0, f"{pwr_r}")
+
+            # Log output calculation
+            print(f"\nPr = {self.y_values[len(self.y_values) - 1]} {plot_y_unit.get()}")
         
         # Calculate pwr_t values for the selected graph_type
         #! Will probably need to update this to new 1 way jamming formulas, shouldnt affect much
@@ -155,8 +150,6 @@ class Graph:
         self.convert_y_values(plot_y_unit.get())
 
         
-
-
     def convert_x_values(self, unit):
         if unit == "m": return
 
@@ -185,7 +178,6 @@ class Graph:
         
         self.y_values = new_y_values
 
-
 ##################################### Calculations ######################################
 
 def calculate_and_plot():
@@ -194,53 +186,47 @@ def calculate_and_plot():
     rj_error = False
 
     # Check if all text fields have valid inputs
-    # for i in range(1, 6, 2):
-    #     if   i == 1: pr_error = validate_entries(i)
-    #     elif i == 3: nj_error = validate_entries(i)
-    #     elif i == 5: rj_error = validate_entries(i)
-
+    for i in range(1, 6, 2):
+        if   i == 1: pr_error = validate_entries(i)
+        elif i == 3: nj_error = validate_entries(i)
+        elif i == 5: rj_error = validate_entries(i)
 
     root.focus_set()
 
     graph_pr = Graph("pr", pr_error,
-                     pr_entries["pr"] , pr_units["pr"],
-                     pt_entries["pr"] , pt_units["pr"],
-                     gt_entries["pr"] , gr_entries["pr"],
-                     f_entries["pr"]  , f_units["pr"],
-                     rcs_entries["pr"], rcs_units["pr"],
-                     r_entries["pr"]  , r_units["pr"])
+                     pr_entries ["pr"] , pr_units  ["pr"],
+                     pt_entries ["pr"] , pt_units  ["pr"],
+                     gt_entries ["pr"] , gr_entries["pr"],
+                     f_entries  ["pr"] , f_units   ["pr"],
+                     rcs_entries["pr"] , rcs_units ["pr"],
+                     r_entries  ["pr"] , r_units   ["pr"])
     
     # graph_nj = Graph("nj", nj_error, 
-    #                  pr_entries["nj"] , pr_units["nj"],
-    #                  pt_entries["nj"] , pt_units["nj"],
-    #                  gt_entries["nj"] , gr_entries["nj"],
-    #                  f_entries["nj"]  , f_units["nj"],
-    #                  rcs_entries["nj"], rcs_units["nj"],
-    #                  r_entries["nj"]  , r_units["nj"])
+    #                  pr_entries ["nj"] , pr_units  ["nj"],
+    #                  pt_entries ["nj"] , pt_units  ["nj"],
+    #                  gt_entries ["nj"] , gr_entries["nj"],
+    #                  f_entries  ["nj"] , f_units   ["nj"],
+    #                  rcs_entries["nj"] , rcs_units ["nj"],
+    #                  r_entries  ["nj"] , r_units   ["nj"])
     
-    # graph_rj = Graph("nj", rj_error, 
-    #                  pr_entries["rj"] , pr_units["rj"],
-    #                  pt_entries["rj"] , pt_units["rj"],
-    #                  gt_entries["rj"] , gr_entries["rj"],
-    #                  f_entries["rj"]  , f_units["rj"],
-    #                  rcs_entries["rj"], rcs_units["rj"],
-    #                  r_entries["rj"]  , r_units["rj"])
-
-    # Log output calculation
-    print(f"\nPr = {graph_pr.y_values[len(graph_pr.y_values) - 1]} {plot_y_unit.get()}")
+    # graph_rj = Graph("rj", rj_error, 
+    #                  pr_entries ["rj"] , pr_units  ["rj"],
+    #                  pt_entries ["rj"] , pt_units  ["rj"],
+    #                  gt_entries ["rj"] , gr_entries["rj"],
+    #                  f_entries  ["rj"] , f_units   ["rj"],
+    #                  rcs_entries["rj"] , rcs_units ["rj"],
+    #                  r_entries  ["rj"] , r_units   ["rj"])
 
     # Clear, initialize, and plot graph
     fig.clear()
     ax = fig.add_subplot(111)
     ax.plot(graph_pr.x_values, graph_pr.y_values, label="Received Power")
-    # ax.plot(range, 10 * numpy.log10(pwr_n), label="Noise Jammer")
-    # ax.plot(range, 10 * numpy.log10(P_range_j), label="Repeater Jammer")
+    # ax.plot(graph_nj.x_values, graph_nj.y_values, label="Noise Jammer")
+    # ax.plot(graph_rj.x_values, graph_rj.y_values, label="Repeater Jammer")
     ax.set_xlabel(f"Range ({plot_x_unit.get()})")
     ax.set_ylabel(f"Received Power {plot_y_unit.get()}")
-    # ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
     ax.legend(loc="upper right")
     canvas.draw()
-
 
 ###################################### GUI Setup ########################################
 
