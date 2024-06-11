@@ -35,7 +35,7 @@ $G_t$ : Gain Transmitted
 $G_r$ : Gain Received  
 $λ$ : Wavelength ( $m$ )  
 $R$ : Range ( $m$ )  
-$Lt$ : Loss - Transmit Path
+$Lt$ : Loss - Transmit Path  
 $La$ : Loss - Propogation Medium  
 $Lr$ : Loss - Receiver Component 
 
