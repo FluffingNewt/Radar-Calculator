@@ -36,6 +36,8 @@ class Graph:
 
             pt_entries["pr"].insert(0, f"{pwr_t}")
 
+            print(f"\nGraph type - Pr:  Pt = {self.pwr_t} {pwr_t_u.get()}")
+
         elif gain_t.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
             self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
@@ -48,6 +50,8 @@ class Graph:
 
             gt_entries["pr"].insert(0, f"{self.gain_t}")
 
+            print(f"\nGraph type - Pr:  Gt = {self.gain_t}")
+
         elif gain_r.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
             self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
@@ -59,6 +63,8 @@ class Graph:
             self.gain_r = f.rre_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.rcs, self.r)
 
             gr_entries["pr"].insert(0, f"{self.gain_r}")
+            
+            print(f"\nGraph type - Pr:  Gr = {self.gain_r}")
         
         elif freq.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -76,6 +82,8 @@ class Graph:
             elif freq_u.get() == "Hz"  : freq = f.convert_to_Hz(self.freq, "Hz")
 
             f_entries["pr"].insert(0, f"{freq}")
+
+            print(f"\nGraph type - Pr:  freq = {freq} {freq_u.get()}")
         
         elif rcs.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -91,6 +99,8 @@ class Graph:
             elif rcs_u.get() == "ft\u00B2" : rcs = f.convert_to_ft2(self.rcs, "m\u00B2")
 
             rcs_entries["pr"].insert(0, f"{rcs}")
+
+            print(f"\nGraph type - Pr:  rcs = {rcs} {rcs_u.get()}")
         
         elif r.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -108,6 +118,8 @@ class Graph:
             elif r_u.get() == "ft"  : r = f.convert_to_ft(self.r, "m")
 
             r_entries["pr"].insert(0, f"{r}")
+
+            print(f"\nGraph type - Pr:  R = {r} {r_u.get()}")
         
         else: # if pwr_r == "" or calculate like normal
             if pwr_r.get() != "": pr_entries["pr"].delete(0, tkinter.END)
@@ -127,7 +139,8 @@ class Graph:
             elif pwr_r_u.get() == "mW"  : pwr_r = f.convert_to_mW(self.pwr_r, "W")
 
             pr_entries["pr"].insert(0, f"{pwr_r}")
-            print(f"\nPr = {pwr_r} {pwr_r_u.get()}")
+
+            print(f"\nGraph type - Pr:  Pr = {pwr_r} {pwr_r_u.get()}")
 
 
         # generate x and y values
@@ -201,7 +214,7 @@ class GraphJammer:
 
             pt_entries[type].insert(0, f"{pwr_t}")
 
-            print(f"\nGraph type - {type}:    Pr = {pwr_t} {pwr_t_u.get()}")
+            print(f"\nGraph type - {type}:  Pt = {pwr_t} {pwr_t_u.get()}")
 
         elif gain_t.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -217,7 +230,7 @@ class GraphJammer:
 
             gt_entries[type].insert(0, f"{self.gain_t}")
 
-            print(f"\nGraph type - {type}:    Pr = {self.gain_t}")
+            print(f"\nGraph type - {type}:  Gt = {self.gain_t}")
 
         elif gain_r.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -233,7 +246,7 @@ class GraphJammer:
 
             gr_entries[type].insert(0, f"{self.gain_r}")
 
-            print(f"\nGraph type - {type}:    Pr = {self.gain_r}")
+            print(f"\nGraph type - {type}:  Gr = {self.gain_r}")
         
         elif freq.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -254,7 +267,7 @@ class GraphJammer:
 
             f_entries[type].insert(0, f"{freq}")
 
-            print(f"\nGraph type - {type}:    Pr = {freq} {freq_u.get()}")
+            print(f"\nGraph type - {type}:  freq = {freq} {freq_u.get()}")
         
         elif r.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -275,7 +288,7 @@ class GraphJammer:
 
             r_entries[type].insert(0, f"{r}")
 
-            print(f"\nGraph type - {type}:    Pr = {r} {r_u.get()}")
+            print(f"\nGraph type - {type}:  R = {r} {r_u.get()}")
 
         elif loss_t.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -291,7 +304,7 @@ class GraphJammer:
 
             lt_entries[type].insert(0, f"{self.loss_t}")
 
-            print(f"\nGraph type - {type}:    Lt = {self.loss_t}")
+            print(f"\nGraph type - {type}:  Lt = {self.loss_t}")
         
         elif loss_a.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -307,7 +320,7 @@ class GraphJammer:
 
             la_entries[type].insert(0, f"{self.loss_a}")
 
-            print(f"\nGraph type - {type}:    La = {self.loss_a}")
+            print(f"\nGraph type - {type}:  La = {self.loss_a}")
         
         elif loss_r.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -323,7 +336,7 @@ class GraphJammer:
 
             lr_entries[type].insert(0, f"{self.loss_r}")
 
-            print(f"\nGraph type - {type}:    Lr = {self.loss_r}")
+            print(f"\nGraph type - {type}:  Lr = {self.loss_r}")
 
         else: # if pwr_r == "" or calculate like normal
             if pwr_r.get() != "": pr_entries[type].delete(0, tkinter.END)
@@ -346,7 +359,7 @@ class GraphJammer:
 
             pr_entries[type].insert(0, f"{pwr_r}")
 
-            print(f"\nGraph type - {type}:    Pr = {pwr_r} {pwr_r_u.get()}")
+            print(f"\nGraph type - {type}:  Pr = {pwr_r} {pwr_r_u.get()}")
 
         # generate x and y values
         self.x_values = numpy.linspace(1, self.r, 400)
