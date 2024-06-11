@@ -113,45 +113,45 @@ def convert_to_ft2(value, unit):
     if   unit == "m\u00B2" : return value * 10.7639
     else                   : return value # Passthrough
 
-####### Formulas #######
+####### RRE Formulas #######
 
 def rre_pr(pt, gt, gr, f, rcs, r):
     w = 299792458.0 / f
     numer = pt * gt * gr * (w**2) * rcs
-    denom = (4 * math.pi)**3 * (r**4)
+    denom = (4 * math.pi)**3 * (r**2)
     return numer / denom
 
 
 def rre_pt(pr, gt, gr, f, rcs, r):
     w = 299792458.0 / f
-    numer = pr * (4 * math.pi)**3 * (r**4)
+    numer = pr * (4 * math.pi)**3 * (r**2)
     denom =  gt * gr * (w**2) * rcs
     return numer / denom
 
 
 def rre_gt(pr, pt, gr, f, rcs, r):
     w = 299792458.0 / f
-    numer = pr * (4 * math.pi)**3 * (r**4)
+    numer = pr * (4 * math.pi)**3 * (r**2)
     denom =  pt * gr * (w**2) * rcs
     return numer / denom
 
 
 def rre_gr(pr, pt, gt, f, rcs, r):
     w = 299792458.0 / f
-    numer = pr * (4 * math.pi)**3 * (r**4)
+    numer = pr * (4 * math.pi)**3 * (r**2)
     denom =  pt * gt * (w**2) * rcs
     return numer / denom
 
 
 def rre_f(pr, pt, gt, gr, rcs, r):
-    numer = pr * (4 * math.pi)**3 * (r**4)
+    numer = pr * (4 * math.pi)**3 * (r**2)
     denom =  pt * gt * gr * rcs
     return 299792458.0 / ((numer / denom)**0.5)
 
 
 def rre_rcs(pr, pt, gt, gr, f, r):
     w = 299792458.0 / f
-    numer = pr * (4 * math.pi)**3 * (r**4)
+    numer = pr * (4 * math.pi)**3 * (r**2)
     denom =  pt * gt * gr * (w**2)
     return numer / denom
 
@@ -161,3 +161,66 @@ def rre_r(pr, pt, gt, gr, f, rcs):
     numer = pt * gt * gr * (w ** 2) * rcs
     denom =  pr * (4 * math.pi)**3
     return (numer / denom)**0.25
+
+####### RRE Jammer Formulas #######
+
+def rre_j_pr(pt, gt, gr, f, r, lt, la, lr):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w**2)
+    denom = (4 * math.pi)**2 * (r**2) * lt * la * lr
+    return numer / denom
+
+
+def rre_j_pt(pr, gt, gr, f, r, lt, la, lr):
+    w = 299792458.0 / f
+    numer = pr * (4 * math.pi)**2 * (r**2) * lt * la * lr
+    denom =  gt * gr * (w**2)
+    return numer / denom
+
+
+def rre_j_gt(pr, pt, gr, f, r, lt, la, lr):
+    w = 299792458.0 / f
+    numer = pr * (4 * math.pi)**2 * (r**2) * lt * la * lr
+    denom =  pt * gr * (w**2)
+    return numer / denom
+
+
+def rre_j_gr(pr, pt, gt, f, r, lt, la, lr):
+    w = 299792458.0 / f
+    numer = pr * (4 * math.pi)**2 * (r**2) * lt * la * lr
+    denom =  pt * gt * (w**2)
+    return numer / denom
+
+
+def rre_j_f(pr, pt, gt, gr, r, lt, la, lr):
+    numer = pr * (4 * math.pi)**2 * (r**2) * lt * la * lr
+    denom =  pt * gt * gr
+    return 299792458.0 / ((numer / denom)**0.5)
+
+
+def rre_j_r(pr, pt, gt, gr, f, lt, la, lr):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w ** 2)
+    denom =  pr * (4 * math.pi)**2 * lt * la * lr
+    return (numer / denom)**0.25
+
+
+def rre_j_lt(pt, gt, gr, f, r, la, lr):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w**2)
+    denom = (4 * math.pi)**2 * (r**2) * la * lr
+    return numer / denom
+
+
+def rre_j_la(pt, gt, gr, f, r, lt, lr):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w**2)
+    denom = (4 * math.pi)**2 * (r**2) * lt * lr
+    return numer / denom
+
+
+def rre_j_lr(pt, gt, gr, f, r, lt, la):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w**2)
+    denom = (4 * math.pi)**2 * (r**2) * lt * la
+    return numer / denom
