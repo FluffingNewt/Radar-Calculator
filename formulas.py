@@ -52,7 +52,7 @@ def convert_to_dBm(value, unit):
     value = float(value)
     if   unit == "dBW" : return value + 30.0
     elif unit == "W"   : return 10 * math.log10(value * 1000.0)
-    elif unit == "mW"  : return 10 * math.log10(value / 1000.0)
+    elif unit == "mW"  : return 10 * math.log10(value)
     else               : return value # Passthrough
 
 
@@ -90,7 +90,7 @@ def convert_to_kHz(value, unit):
     value = float(value)
     if   unit == "GHz" : return value * 1.0e6
     elif unit == "MHz" : return value * 1.0e3
-    elif unit == "Hz" : return value / 1.0e3
+    elif unit == "Hz"  : return value / 1.0e3
     else               : return value # Passthrough
 
 
@@ -118,40 +118,40 @@ def convert_to_ft2(value, unit):
 def rre_pr(pt, gt, gr, f, rcs, r):
     w = 299792458.0 / f
     numer = pt * gt * gr * (w**2) * rcs
-    denom = (4 * math.pi)**3 * (r**2)
+    denom = (4 * math.pi)**3 * (r**4)
     return numer / denom
 
 
 def rre_pt(pr, gt, gr, f, rcs, r):
     w = 299792458.0 / f
-    numer = pr * (4 * math.pi)**3 * (r**2)
+    numer = pr * (4 * math.pi)**3 * (r**4)
     denom =  gt * gr * (w**2) * rcs
     return numer / denom
 
 
 def rre_gt(pr, pt, gr, f, rcs, r):
     w = 299792458.0 / f
-    numer = pr * (4 * math.pi)**3 * (r**2)
+    numer = pr * (4 * math.pi)**3 * (r**4)
     denom =  pt * gr * (w**2) * rcs
     return numer / denom
 
 
 def rre_gr(pr, pt, gt, f, rcs, r):
     w = 299792458.0 / f
-    numer = pr * (4 * math.pi)**3 * (r**2)
+    numer = pr * (4 * math.pi)**3 * (r**4)
     denom =  pt * gt * (w**2) * rcs
     return numer / denom
 
 
 def rre_f(pr, pt, gt, gr, rcs, r):
-    numer = pr * (4 * math.pi)**3 * (r**2)
+    numer = pr * (4 * math.pi)**3 * (r**4)
     denom =  pt * gt * gr * rcs
     return 299792458.0 / ((numer / denom)**0.5)
 
 
 def rre_rcs(pr, pt, gt, gr, f, r):
     w = 299792458.0 / f
-    numer = pr * (4 * math.pi)**3 * (r**2)
+    numer = pr * (4 * math.pi)**3 * (r**4)
     denom =  pt * gt * gr * (w**2)
     return numer / denom
 
