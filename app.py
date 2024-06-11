@@ -201,6 +201,8 @@ class GraphJammer:
 
             pt_entries[type].insert(0, f"{pwr_t}")
 
+            print(f"\nGraph type - {type}:    Pr = {pwr_t} {pwr_t_u.get()}")
+
         elif gain_t.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
             self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
@@ -215,6 +217,8 @@ class GraphJammer:
 
             gt_entries[type].insert(0, f"{self.gain_t}")
 
+            print(f"\nGraph type - {type}:    Pr = {self.gain_t}")
+
         elif gain_r.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
             self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
@@ -228,6 +232,8 @@ class GraphJammer:
             self.gain_r = f.rre_j_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
 
             gr_entries[type].insert(0, f"{self.gain_r}")
+
+            print(f"\nGraph type - {type}:    Pr = {self.gain_r}")
         
         elif freq.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -247,6 +253,8 @@ class GraphJammer:
             elif freq_u.get() == "Hz"  : freq = f.convert_to_Hz(self.freq, "Hz")
 
             f_entries[type].insert(0, f"{freq}")
+
+            print(f"\nGraph type - {type}:    Pr = {freq} {freq_u.get()}")
         
         elif r.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -267,18 +275,23 @@ class GraphJammer:
 
             r_entries[type].insert(0, f"{r}")
 
+            print(f"\nGraph type - {type}:    Pr = {r} {r_u.get()}")
+
         elif loss_t.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
             self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
             self.gain_t = float(gain_t.get())
             self.gain_r = float(gain_r.get())
             self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.r      = f.convert_to_m(r.get(), r_u.get())
             self.loss_a = float(loss_a.get())
             self.loss_r = float(loss_r.get())
 
             self.loss_t = f.rre_j_lt(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_a, self.loss_r)
 
             lt_entries[type].insert(0, f"{self.loss_t}")
+
+            print(f"\nGraph type - {type}:    Lt = {self.loss_t}")
         
         elif loss_a.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -286,12 +299,15 @@ class GraphJammer:
             self.gain_t = float(gain_t.get())
             self.gain_r = float(gain_r.get())
             self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.r      = f.convert_to_m(r.get(), r_u.get())
             self.loss_t = float(loss_t.get())
             self.loss_r = float(loss_r.get())
 
             self.loss_a = f.rre_j_la(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_r)
 
             la_entries[type].insert(0, f"{self.loss_a}")
+
+            print(f"\nGraph type - {type}:    La = {self.loss_a}")
         
         elif loss_r.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -299,12 +315,15 @@ class GraphJammer:
             self.gain_t = float(gain_t.get())
             self.gain_r = float(gain_r.get())
             self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.r      = f.convert_to_m(r.get(), r_u.get())
             self.loss_t = float(loss_t.get())
             self.loss_a = float(loss_a.get())
 
             self.loss_r = f.rre_j_lr(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a)
 
             lr_entries[type].insert(0, f"{self.loss_r}")
+
+            print(f"\nGraph type - {type}:    Lr = {self.loss_r}")
 
         else: # if pwr_r == "" or calculate like normal
             if pwr_r.get() != "": pr_entries[type].delete(0, tkinter.END)
@@ -327,6 +346,7 @@ class GraphJammer:
 
             pr_entries[type].insert(0, f"{pwr_r}")
 
+            print(f"\nGraph type - {type}:    Pr = {pwr_r} {pwr_r_u.get()}")
 
         # generate x and y values
         self.x_values = numpy.linspace(1, self.r, 400)
@@ -339,8 +359,6 @@ class GraphJammer:
             self.y_values.append(pr)
             i += 1
 
-        # Log output calculation
-        print(f"\nPr = {self.y_values[len(self.y_values) - 1]} {plot_y_unit.get()}")
 
         self.convert_x_values(plot_x_unit.get())
         self.convert_y_values(plot_y_unit.get())
@@ -439,6 +457,8 @@ def validate_entries(column):
     blank_entries = []
     error_found = False
 
+    special_chars = "[$&+,:;=?@#|'\"<>_^*()%!]"
+
     # Loop through all children of the root window
     for child in root.winfo_children():
         if isinstance(child, tkinter.Entry):
@@ -447,7 +467,7 @@ def validate_entries(column):
                 value = child.get()
 
                 if any(char.isalpha() for char in value) or \
-                   any(char in value for char in "[$&+,:;=?@#|'\"<>-_^*()%!]") or \
+                   any(char in value for char in special_chars) or \
                    value in ["0", "0.0"]:
                     print(f"Error: Invalid input '{value}' in row {info['row']}")
                     child.delete(0, tkinter.END)
@@ -511,9 +531,9 @@ create_label(root, "Received Power", 0, 1, 10,  5, "ew", 2)
 create_label(root, "Noise Jammer", 0, 3, 10, 5, "ew", 2)
 create_label(root, "Repeater Jammer", 0, 5, 10, 5, "ew", 2)
 
-# Power Transmitted
 row = 2
 col = 0
+# Power Transmitted
 pt_entries = {}
 pt_units = {}
 col_count = 1
@@ -527,18 +547,18 @@ for type in graph_types:
     col += 2
     col_count += 3
 
-# Gain Transmitted
 row = 3
 col = 0
+# Gain Transmitted
 gt_entries = {}
 create_label(root, "Gt : Gain Transmitted", row, col)
 for type in graph_types:
     gt_entries[type] = create_entry(root, row, col+1, 10)
     col += 2
 
-# Gain Received
 row = 4
 col = 0
+# Gain Received
 gr_entries = {}
 create_label(root, "Gr : Gain Received", row, col)
 for type in graph_types:
@@ -546,9 +566,9 @@ for type in graph_types:
     col += 2
     col_count += 1
 
-# Frequency
 row = 5
 col = 0
+# Frequency
 f_entries = {}
 f_units = {}
 create_label(root, "\u03BD : Frequency", row, col)
@@ -558,9 +578,9 @@ for type in graph_types:
     create_combobox(root, f_units[type], f.units_GHz, row, col+2)
     col += 2
 
-# RCS
 row = 6 
 col = 0
+# RCS
 rcs_entries = {}
 rcs_units = {}
 create_label(root, "\u03C3 : Radar Cross Section", row, col)
@@ -568,9 +588,9 @@ rcs_entries["pr"] = create_entry(root, row, col+1, 10)
 rcs_units["pr"] = tkinter.StringVar(value="m\u00B2")
 create_combobox(root, rcs_units["pr"], f.units_rcs, row, col+2)
 
-# Range
 row = 7
 col = 0
+# Range
 r_entries = {}
 r_units = {}
 create_label(root, "R : Range", row, col)
@@ -580,9 +600,9 @@ for type in graph_types:
     create_combobox(root, r_units[type], f.units_NMI, row, col+2)
     col += 2
 
-# Transmit Path Loss
 row = 8
 col = 2
+# Transmit Path Loss
 lt_entries = {}
 create_label(root, "Lt : Transmit Path Loss", row, 0)
 for type in graph_types:
@@ -591,9 +611,9 @@ for type in graph_types:
     col += 2
     col_count += 1
 
-# Propogation Medium Loss
 row = 9
 col = 2
+# Propogation Medium Loss
 la_entries = {}
 create_label(root, "La : Propogation Medium Loss", row, 0)
 for type in graph_types:
@@ -602,9 +622,9 @@ for type in graph_types:
     col += 2
     col_count += 1
 
-# Receiver Component Loss
 row = 10
 col = 2
+# Receiver Component Loss
 lr_entries = {}
 create_label(root, "Lr : Receiver Component Loss", row, 0)
 for type in graph_types:
@@ -613,9 +633,9 @@ for type in graph_types:
     col += 2
     col_count += 1    
 
-# Power Received
 row = 12
 col = 0
+# Power Received
 pr_entries = {}
 pr_units = {}
 create_label(root, "Pr : Power Received", row, col, 10, 10)
@@ -625,23 +645,25 @@ for type in graph_types:
     create_combobox(root, pr_units[type], f.units_dBW, row, col+2)
     col += 2
 
-# x Unit
 row = 15
 col = 0
+# Graph Units Frame
 frame = tkinter.Frame(root)
 frame.grid(row=row, column=col, columnspan=1, rowspan=1, sticky="n")
-plot_x_unit = tkinter.StringVar(value="NMI")
+
 row = 0
 col = 0
+## x Unit
+plot_x_unit = tkinter.StringVar(value="NMI")
 create_label(frame, "x Unit", row, col)
 create_combobox(frame, plot_x_unit, f.units_NMI, row, col+1)
 
-# y Unit
+## y Unit
 plot_y_unit = tkinter.StringVar(value="dBW")
 create_label(frame, "y Unit", row+1, col)
 create_combobox(frame, plot_y_unit, f.units_dBW, row+1, col+1)
 
-# Plot Button
+## Plot Button
 btn_plot = tkinter.Button(frame, text="Plot", command=calculate_and_plot, font=default_font)
 btn_plot.grid(row=row+2, column=col, columnspan=2, sticky="s")
 
@@ -651,9 +673,9 @@ create_separator(root, "horizontal", 1, 0, 1, col_count+3, "ew")
 create_separator(root, "horizontal", 11, 0, 1, col_count+3, "ew", 0, 0)
 create_separator(root, "horizontal", 14, 0, 1, col_count+3, "ew", 0, 0)
 
-# Matplotlib figure setup
 row = 15
 col = 1
+# Matplotlib figure setup
 fig = Figure(layout="tight")
 canvas = FigureCanvasTkAgg(fig, master=root)
 canvas.get_tk_widget().grid(row=row, column=col, columnspan=6, sticky="ew")

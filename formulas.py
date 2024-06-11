@@ -202,25 +202,25 @@ def rre_j_r(pr, pt, gt, gr, f, lt, la, lr):
     w = 299792458.0 / f
     numer = pt * gt * gr * (w ** 2)
     denom =  pr * (4 * math.pi)**2 * lt * la * lr
-    return (numer / denom)**0.25
+    return (numer / denom)**0.5
 
 
-def rre_j_lt(pt, gt, gr, f, r, la, lr):
+def rre_j_lt(pr, pt, gt, gr, f, r, la, lr):
     w = 299792458.0 / f
     numer = pt * gt * gr * (w**2)
-    denom = (4 * math.pi)**2 * (r**2) * la * lr
+    denom = pr * (4 * math.pi)**2 * (r**2) * la * lr
     return numer / denom
 
 
-def rre_j_la(pt, gt, gr, f, r, lt, lr):
+def rre_j_la(pr, pt, gt, gr, f, r, lt, lr):
     w = 299792458.0 / f
     numer = pt * gt * gr * (w**2)
-    denom = (4 * math.pi)**2 * (r**2) * lt * lr
+    denom = pr * (4 * math.pi)**2 * (r**2) * lt * lr
     return numer / denom
 
 
-def rre_j_lr(pt, gt, gr, f, r, lt, la):
+def rre_j_lr(pr, pt, gt, gr, f, r, lt, la):
     w = 299792458.0 / f
     numer = pt * gt * gr * (w**2)
-    denom = (4 * math.pi)**2 * (r**2) * lt * la
+    denom = pr * (4 * math.pi)**2 * (r**2) * lt * la
     return numer / denom
