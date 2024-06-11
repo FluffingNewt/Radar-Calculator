@@ -7,7 +7,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
 #! TO-DO
-#! Finish RangeJammer Class
+#! Add Linear and Logarithmic tabs
 
 graph_types = ["pr", "nj", "rj"]
 
