@@ -3,30 +3,30 @@ import math
 units_NMI  = ["NMI", "mi", "m", "ft"]
 units_dBW  = ["dBW", "dBm", "W", "mW"]
 units_GHz  = ["GHz", "MHz", "Hz", "kHz"]
-units_rcs  = ["m\u00B2"]
+units_rcs  = ["m\u00B2", "ft\u00B2"]
 
 
 ###### Conversions ######
 
 def convert_to_NMI(value, unit):
     value = float(value)
-    if   unit == "mi" : return value * 0.868976242
+    if   unit == "mi" : return value / 1.15078
     elif unit == "m"  : return value / 1852.0
-    elif unit == "ft" : return value * (1.64578834 * 10.0e-4)
+    elif unit == "ft" : return value / 6076.11549
     else              : return value # Passthrough
 
 
 def convert_to_mi(value, unit):
     value = float(value)
     if   unit == "NMI" : return value * 1.15078
-    elif unit == "m"   : return value * 6.21e-4
-    elif unit == "ft"  : return value / 5280
+    elif unit == "m"   : return value / 1609.344
+    elif unit == "ft"  : return value / 5280.0
     else               : return value # Passthrough
 
 
 def convert_to_m(value, unit):
     value = float(value)
-    if   unit == "NMI" : return value * 1852
+    if   unit == "NMI" : return value * 1852.0
     elif unit == "mi"  : return value * 1609.344
     elif unit == "ft"  : return value * 0.3048
     else               : return value # Passthrough
@@ -34,9 +34,9 @@ def convert_to_m(value, unit):
 
 def convert_to_ft(value, unit):
     value = float(value)
-    if   unit == "NMI" : return value * 6076.12
-    elif unit == "mi"  : return value * 5280 
-    elif unit == "m"   : return value * 3.28084
+    if   unit == "NMI" : return value * 6076.11549
+    elif unit == "mi"  : return value * 5280.0
+    elif unit == "m"   : return value / 0.3048
     else               : return value # Passthrough
 
 
@@ -52,7 +52,7 @@ def convert_to_dBm(value, unit):
     value = float(value)
     if   unit == "dBW" : return value + 30.0
     elif unit == "W"   : return 10 * math.log10(value * 1000.0)
-    elif unit == "mW"  : return 10 * math.log10(value / 1000.0)
+    elif unit == "mW"  : return 10 * math.log10(value)
     else               : return value # Passthrough
 
 
@@ -70,6 +70,30 @@ def convert_to_mW(value, unit):
     else            : return value  # Passthrough
 
 
+def convert_to_GHz(value, unit):
+    value = float(value)
+    if   unit == "MHz" : return value / 1.0e3
+    elif unit == "kHz" : return value / 1.0e6
+    elif unit == "Hz"  : return value / 1.0e9
+    else               : return value # Passthrough
+
+
+def convert_to_MHz(value, unit):
+    value = float(value)
+    if   unit == "GHz" : return value * 1.0e3
+    elif unit == "kHz" : return value / 1.0e3
+    elif unit == "Hz"  : return value / 1.0e6
+    else               : return value # Passthrough
+
+
+def convert_to_kHz(value, unit):
+    value = float(value)
+    if   unit == "GHz" : return value * 1.0e6
+    elif unit == "MHz" : return value * 1.0e3
+    elif unit == "Hz"  : return value / 1.0e3
+    else               : return value # Passthrough
+
+
 def convert_to_Hz(value, unit):
     value = float(value)
     if   unit == "GHz" : return value * 1.0e9
@@ -78,7 +102,18 @@ def convert_to_Hz(value, unit):
     else               : return value # Passthrough
 
 
-####### Formulas #######
+def convert_to_m2(value, unit):
+    value = float(value)
+    if   unit == "ft\u00B2" : return value / 10.7639
+    else                    : return value # Passthrough
+
+
+def convert_to_ft2(value, unit):
+    value = float(value)
+    if   unit == "m\u00B2" : return value * 10.7639
+    else                   : return value # Passthrough
+
+####### RRE Formulas #######
 
 def rre_pr(pt, gt, gr, f, rcs, r):
     w = 299792458.0 / f
@@ -126,3 +161,66 @@ def rre_r(pr, pt, gt, gr, f, rcs):
     numer = pt * gt * gr * (w ** 2) * rcs
     denom =  pr * (4 * math.pi)**3
     return (numer / denom)**0.25
+
+####### RRE Jammer Formulas #######
+
+def rre_j_pr(pt, gt, gr, f, r, lt, la, lr):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w**2)
+    denom = (4 * math.pi)**2 * (r**2) * lt * la * lr
+    return numer / denom
+
+
+def rre_j_pt(pr, gt, gr, f, r, lt, la, lr):
+    w = 299792458.0 / f
+    numer = pr * (4 * math.pi)**2 * (r**2) * lt * la * lr
+    denom =  gt * gr * (w**2)
+    return numer / denom
+
+
+def rre_j_gt(pr, pt, gr, f, r, lt, la, lr):
+    w = 299792458.0 / f
+    numer = pr * (4 * math.pi)**2 * (r**2) * lt * la * lr
+    denom =  pt * gr * (w**2)
+    return numer / denom
+
+
+def rre_j_gr(pr, pt, gt, f, r, lt, la, lr):
+    w = 299792458.0 / f
+    numer = pr * (4 * math.pi)**2 * (r**2) * lt * la * lr
+    denom =  pt * gt * (w**2)
+    return numer / denom
+
+
+def rre_j_f(pr, pt, gt, gr, r, lt, la, lr):
+    numer = pr * (4 * math.pi)**2 * (r**2) * lt * la * lr
+    denom =  pt * gt * gr
+    return 299792458.0 / ((numer / denom)**0.5)
+
+
+def rre_j_r(pr, pt, gt, gr, f, lt, la, lr):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w ** 2)
+    denom =  pr * (4 * math.pi)**2 * lt * la * lr
+    return (numer / denom)**0.5
+
+
+def rre_j_lt(pr, pt, gt, gr, f, r, la, lr):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w**2)
+    denom = pr * (4 * math.pi)**2 * (r**2) * la * lr
+    return numer / denom
+
+
+def rre_j_la(pr, pt, gt, gr, f, r, lt, lr):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w**2)
+    denom = pr * (4 * math.pi)**2 * (r**2) * lt * lr
+    return numer / denom
+
+
+def rre_j_lr(pr, pt, gt, gr, f, r, lt, la):
+    w = 299792458.0 / f
+    numer = pt * gt * gr * (w**2)
+    denom = pr * (4 * math.pi)**2 * (r**2) * lt * la
+    return numer / denom
