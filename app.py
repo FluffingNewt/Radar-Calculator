@@ -7,7 +7,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
 #! TO-DO
-#! Finish RangeJammer Class
+#! Add Linear and Logarithmic tabs
 
 graph_types = ["pr", "nj", "rj"]
 
@@ -364,7 +364,9 @@ class GraphJammer:
         # generate x and y values
         self.x_values = numpy.linspace(1, self.r, 400)
         self.y_values = []
-        pwr_t_values  = numpy.linspace(self.pwr_t, self.pwr_t, 400)
+
+        if type == "rj" : pwr_t_values  = numpy.linspace(1, self.pwr_t, 400)
+        else            : pwr_t_values  = numpy.linspace(self.pwr_t, self.pwr_t, 400)
 
         i = 0
         for range in self.x_values:
