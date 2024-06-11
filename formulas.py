@@ -6,7 +6,7 @@ units_GHz  = ["GHz", "MHz", "Hz", "kHz"]
 units_rcs  = ["m\u00B2", "ft\u00B2"]
 
 
-###### Conversions ######
+#!###### Unit Conversions #####!#
 
 def convert_to_NMI(value, unit):
     value = float(value)
@@ -113,7 +113,7 @@ def convert_to_ft2(value, unit):
     if   unit == "m\u00B2" : return value * 10.7639
     else                   : return value # Passthrough
 
-####### RRE Formulas #######
+#!###### RRE Formulas ######!#
 
 def rre_pr(pt, gt, gr, f, rcs, r):
     w = 299792458.0 / f
@@ -162,7 +162,7 @@ def rre_r(pr, pt, gt, gr, f, rcs):
     denom =  pr * (4 * math.pi)**3
     return (numer / denom)**0.25
 
-####### RRE Jammer Formulas #######
+#!###### RRE Jammer Formulas ######!#
 
 def rre_j_pr(pt, gt, gr, f, r, lt, la, lr):
     w = 299792458.0 / f
