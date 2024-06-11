@@ -30,12 +30,12 @@ class Graph:
             
             self.pwr_t = f.rre_pt(self.pwr_r, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
 
-            if   pwr_t_u.get() == "dBW" : self.pwr_t = f.convert_to_dBW(self.pwr_t, "W")
-            elif pwr_t_u.get() == "dBm" : self.pwr_t = f.convert_to_dBm(self.pwr_t, "W")
-            elif pwr_t_u.get() == "W"   : self.pwr_t = f.convert_to_W(self.pwr_t, "W")
-            elif pwr_t_u.get() == "mW"  : self.pwr_t = f.convert_to_mW(self.pwr_t, "W")
+            if   pwr_t_u.get() == "dBW" : pwr_t = f.convert_to_dBW(self.pwr_t, "W")
+            elif pwr_t_u.get() == "dBm" : pwr_t = f.convert_to_dBm(self.pwr_t, "W")
+            elif pwr_t_u.get() == "W"   : pwr_t = f.convert_to_W(self.pwr_t, "W")
+            elif pwr_t_u.get() == "mW"  : pwr_t = f.convert_to_mW(self.pwr_t, "W")
 
-            pt_entries["pr"].insert(0, f"{self.pwr_t}")
+            pt_entries["pr"].insert(0, f"{pwr_t}")
 
         elif gain_t.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -71,12 +71,12 @@ class Graph:
 
             self.freq = f.rre_f(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.rcs, self.r)
 
-            if   freq_u.get() == "GHz" : self.freq = f.convert_to_GHz(self.freq, "Hz")
-            elif freq_u.get() == "MHz" : self.freq = f.convert_to_MHz(self.freq, "Hz")
-            elif freq_u.get() == "kHz" : self.freq = f.convert_to_kHz(self.freq, "Hz")
-            elif freq_u.get() == "Hz"  : self.freq = f.convert_to_Hz(self.freq, "Hz")
+            if   freq_u.get() == "GHz" : freq = f.convert_to_GHz(self.freq, "Hz")
+            elif freq_u.get() == "MHz" : freq = f.convert_to_MHz(self.freq, "Hz")
+            elif freq_u.get() == "kHz" : freq = f.convert_to_kHz(self.freq, "Hz")
+            elif freq_u.get() == "Hz"  : freq = f.convert_to_Hz(self.freq, "Hz")
 
-            f_entries["pr"].insert(0, f"{self.freq}")
+            f_entries["pr"].insert(0, f"{freq}")
         
         elif rcs.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -88,10 +88,10 @@ class Graph:
 
             self.rcs = f.rre_rcs(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r)
 
-            if   rcs_u.get() == "m\u00B2"  : self.rcs = f.convert_to_m2(self.rcs, "m\u00B2")
-            elif rcs_u.get() == "ft\u00B2" : self.rcs = f.convert_to_ft2(self.rcs, "m\u00B2")
+            if   rcs_u.get() == "m\u00B2"  : rcs = f.convert_to_m2(self.rcs, "m\u00B2")
+            elif rcs_u.get() == "ft\u00B2" : rcs = f.convert_to_ft2(self.rcs, "m\u00B2")
 
-            rcs_entries["pr"].insert(0, f"{self.rcs}")
+            rcs_entries["pr"].insert(0, f"{rcs}")
         
         elif r.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -103,12 +103,12 @@ class Graph:
 
             self.r = f.rre_r(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs)
 
-            if   r_u.get() == "NMI" : self.r = f.convert_to_NMI(self.r, "m")
-            elif r_u.get() == "mi"  : self.r = f.convert_to_mi(self.r, "m")
-            elif r_u.get() == "m"   : self.r = f.convert_to_m(self.r, "m")
-            elif r_u.get() == "ft"  : self.r = f.convert_to_ft(self.r, "m")
+            if   r_u.get() == "NMI" : r = f.convert_to_NMI(self.r, "m")
+            elif r_u.get() == "mi"  : r = f.convert_to_mi(self.r, "m")
+            elif r_u.get() == "m"   : r = f.convert_to_m(self.r, "m")
+            elif r_u.get() == "ft"  : r = f.convert_to_ft(self.r, "m")
 
-            r_entries["pr"].insert(0, f"{self.r}")
+            r_entries["pr"].insert(0, f"{r}")
         
         else: # if pwr_r == "" or calculate like normal
             if pwr_r.get() != "": pr_entries["pr"].delete(0, tkinter.END)
@@ -122,13 +122,13 @@ class Graph:
 
             self.pwr_r = f.rre_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
 
-            if   pwr_r_u.get() == "dBW" : self.pwr_r = f.convert_to_dBW(self.pwr_r, "W")
-            elif pwr_r_u.get() == "dBm" : self.pwr_r = f.convert_to_dBm(self.pwr_r, "W")
-            elif pwr_r_u.get() == "W"   : self.pwr_r = f.convert_to_W(self.pwr_r, "W")
-            elif pwr_r_u.get() == "mW"  : self.pwr_r = f.convert_to_mW(self.pwr_r, "W")
+            if   pwr_r_u.get() == "dBW" : pwr_r = f.convert_to_dBW(self.pwr_r, "W")
+            elif pwr_r_u.get() == "dBm" : pwr_r = f.convert_to_dBm(self.pwr_r, "W")
+            elif pwr_r_u.get() == "W"   : pwr_r = f.convert_to_W(self.pwr_r, "W")
+            elif pwr_r_u.get() == "mW"  : pwr_r = f.convert_to_mW(self.pwr_r, "W")
 
-            pr_entries["pr"].insert(0, f"{self.pwr_r}")
-            print(f"\nPr = {self.pwr_r} {pwr_r_u.get()}")
+            pr_entries["pr"].insert(0, f"{pwr_r}")
+            print(f"\nPr = {pwr_r} {pwr_r_u.get()}")
 
 
         # generate x and y values
