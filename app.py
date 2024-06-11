@@ -7,7 +7,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
 #! TO-DO
-#! Fix Range backwards combatibility
 #! Finish RangeJammer Class
 
 graph_types = ["pr", "nj", "rj"]
@@ -189,15 +188,18 @@ class GraphJammer:
             self.gain_r = float(gain_r.get())
             self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
             self.r      = f.convert_to_m(r.get(), r_u.get())
+            self.loss_t = float(loss_t.get())
+            self.loss_a = float(loss_a.get())
+            self.loss_r = float(loss_r.get())
             
-            self.pwr_t = f.rre_pt(self.pwr_r, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
+            self.pwr_t = f.rre_j_pt(self.pwr_r, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
 
-            if   pwr_t_u.get() == "dBW" : self.pwr_t = f.convert_to_dBW(self.pwr_t, "W")
-            elif pwr_t_u.get() == "dBm" : self.pwr_t = f.convert_to_dBm(self.pwr_t, "W")
-            elif pwr_t_u.get() == "W"   : self.pwr_t = f.convert_to_W(self.pwr_t, "W")
-            elif pwr_t_u.get() == "mW"  : self.pwr_t = f.convert_to_mW(self.pwr_t, "W")
+            if   pwr_t_u.get() == "dBW" : pwr_t = f.convert_to_dBW(self.pwr_t, "W")
+            elif pwr_t_u.get() == "dBm" : pwr_t = f.convert_to_dBm(self.pwr_t, "W")
+            elif pwr_t_u.get() == "W"   : pwr_t = f.convert_to_W(self.pwr_t, "W")
+            elif pwr_t_u.get() == "mW"  : pwr_t = f.convert_to_mW(self.pwr_t, "W")
 
-            pt_entries[type].insert(0, f"{self.pwr_t}")
+            pt_entries[type].insert(0, f"{pwr_t}")
 
         elif gain_t.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -205,8 +207,11 @@ class GraphJammer:
             self.gain_r = float(gain_r.get())
             self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
             self.r      = f.convert_to_m(r.get(), r_u.get())
+            self.loss_t = float(loss_t.get())
+            self.loss_a = float(loss_a.get())
+            self.loss_r = float(loss_r.get())
 
-            self.gain_t = f.rre_gt(self.pwr_r, self.pwr_t, self.gain_r, self.freq, self.rcs, self.r)
+            self.gain_t = f.rre_j_gt(self.pwr_r, self.pwr_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
 
             gt_entries[type].insert(0, f"{self.gain_t}")
 
@@ -216,8 +221,11 @@ class GraphJammer:
             self.gain_t = float(gain_t.get())
             self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
             self.r      = f.convert_to_m(r.get(), r_u.get())
+            self.loss_t = float(loss_t.get())
+            self.loss_a = float(loss_a.get())
+            self.loss_r = float(loss_r.get())
 
-            self.gain_r = f.rre_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.rcs, self.r)
+            self.gain_r = f.rre_j_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
 
             gr_entries[type].insert(0, f"{self.gain_r}")
         
@@ -227,30 +235,18 @@ class GraphJammer:
             self.gain_t = float(gain_t.get())
             self.gain_r = float(gain_r.get())
             self.r      = f.convert_to_m(r.get(), r_u.get())
+            self.loss_t = float(loss_t.get())
+            self.loss_a = float(loss_a.get())
+            self.loss_r = float(loss_r.get())
 
-            self.freq = f.rre_f(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.rcs, self.r)
+            self.freq = f.rre_j_f(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.r, self.loss_t, self.loss_a, self.loss_r)
 
-            if   freq_u.get() == "GHz" : self.freq = f.convert_to_GHz(self.freq, "Hz")
-            elif freq_u.get() == "MHz" : self.freq = f.convert_to_MHz(self.freq, "Hz")
-            elif freq_u.get() == "kHz" : self.freq = f.convert_to_kHz(self.freq, "Hz")
-            elif freq_u.get() == "Hz"  : self.freq = f.convert_to_Hz(self.freq, "Hz")
+            if   freq_u.get() == "GHz" : freq = f.convert_to_GHz(self.freq, "Hz")
+            elif freq_u.get() == "MHz" : freq = f.convert_to_MHz(self.freq, "Hz")
+            elif freq_u.get() == "kHz" : freq = f.convert_to_kHz(self.freq, "Hz")
+            elif freq_u.get() == "Hz"  : freq = f.convert_to_Hz(self.freq, "Hz")
 
-            f_entries[type].insert(0, f"{self.freq}")
-        
-        elif rcs.get() == "":
-            self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
-            self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
-            self.gain_t = float(gain_t.get())
-            self.gain_r = float(gain_r.get())
-            self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
-            self.r      = f.convert_to_m(r.get(), r_u.get())
-
-            self.rcs = f.rre_rcs(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r)
-
-            if   rcs_u.get() == "m\u00B2"  : rcs = f.convert_to_m2(self.rcs, "m\u00B2")
-            elif rcs_u.get() == "ft\u00B2" : rcs = f.convert_to_ft2(self.rcs, "m\u00B2")
-
-            rcs_entries[type].insert(0, f"{rcs}")
+            f_entries[type].insert(0, f"{freq}")
         
         elif r.get() == "":
             self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
@@ -258,8 +254,11 @@ class GraphJammer:
             self.gain_t = float(gain_t.get())
             self.gain_r = float(gain_r.get())
             self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.loss_t = float(loss_t.get())
+            self.loss_a = float(loss_a.get())
+            self.loss_r = float(loss_r.get())
 
-            self.r = f.rre_r(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs)
+            self.r = f.rre_j_r(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.loss_t, self.loss_a, self.loss_r)
 
             if   r_u.get() == "NMI" : r = f.convert_to_NMI(self.r, "m")
             elif r_u.get() == "mi"  : r = f.convert_to_mi(self.r, "m")
@@ -267,7 +266,46 @@ class GraphJammer:
             elif r_u.get() == "ft"  : r = f.convert_to_ft(self.r, "m")
 
             r_entries[type].insert(0, f"{r}")
+
+        elif loss_t.get() == "":
+            self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
+            self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
+            self.gain_t = float(gain_t.get())
+            self.gain_r = float(gain_r.get())
+            self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.loss_a = float(loss_a.get())
+            self.loss_r = float(loss_r.get())
+
+            self.loss_t = f.rre_j_lt(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_a, self.loss_r)
+
+            lt_entries[type].insert(0, f"{self.loss_t}")
         
+        elif loss_a.get() == "":
+            self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
+            self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
+            self.gain_t = float(gain_t.get())
+            self.gain_r = float(gain_r.get())
+            self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.loss_t = float(loss_t.get())
+            self.loss_r = float(loss_r.get())
+
+            self.loss_a = f.rre_j_la(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_r)
+
+            la_entries[type].insert(0, f"{self.loss_a}")
+        
+        elif loss_r.get() == "":
+            self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
+            self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
+            self.gain_t = float(gain_t.get())
+            self.gain_r = float(gain_r.get())
+            self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
+            self.loss_t = float(loss_t.get())
+            self.loss_a = float(loss_a.get())
+
+            self.loss_r = f.rre_j_lr(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a)
+
+            lr_entries[type].insert(0, f"{self.loss_r}")
+
         else: # if pwr_r == "" or calculate like normal
             if pwr_r.get() != "": pr_entries[type].delete(0, tkinter.END)
 
@@ -276,8 +314,11 @@ class GraphJammer:
             self.gain_r = float(gain_r.get())
             self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
             self.r      = f.convert_to_m(r.get(), r_u.get())
+            self.loss_t = float(loss_t.get())
+            self.loss_a = float(loss_a.get())
+            self.loss_r = float(loss_r.get())
 
-            self.pwr_r = f.rre_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
+            self.pwr_r = f.rre_j_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
 
             if   pwr_r_u.get() == "dBW" : pwr_r = f.convert_to_dBW(self.pwr_r, "W")
             elif pwr_r_u.get() == "dBm" : pwr_r = f.convert_to_dBm(self.pwr_r, "W")
@@ -294,7 +335,7 @@ class GraphJammer:
 
         i = 0
         for range in self.x_values:
-            pr = f.rre_pr(pwr_t_values[i], self.gain_t, self.gain_r, self.freq, self.rcs, range)   
+            pr = f.rre_j_pr(pwr_t_values[i], self.gain_t, self.gain_r, self.freq, range, self.loss_t, self.loss_a, self.loss_r)   
             self.y_values.append(pr)
             i += 1
 
@@ -344,8 +385,8 @@ def calculate_and_plot():
     # Check if all text fields have valid inputs
     for i in range(1, 6, 2):
         if   i == 1: pr_error = validate_entries(i)
-        # elif i == 3: nj_error = validate_entries(i)
-        # elif i == 5: rj_error = validate_entries(i)
+        elif i == 3: nj_error = validate_entries(i)
+        elif i == 5: rj_error = validate_entries(i)
 
     root.focus_set()
 
@@ -357,28 +398,36 @@ def calculate_and_plot():
                      rcs_entries["pr"] , rcs_units ["pr"],
                      r_entries  ["pr"] , r_units   ["pr"])
     
-    # graph_nj = GraphJammer("nj", nj_error, 
-    #                  pr_entries ["nj"] , pr_units  ["nj"],
-    #                  pt_entries ["nj"] , pt_units  ["nj"],
-    #                  gt_entries ["nj"] , gr_entries["nj"],
-    #                  f_entries  ["nj"] , f_units   ["nj"],
-    #                  rcs_entries["nj"] , rcs_units ["nj"],
-    #                  r_entries  ["nj"] , r_units   ["nj"])
+    graph_nj = GraphJammer("nj", nj_error, 
+                     pr_entries ["nj"] , pr_units  ["nj"],
+                     pt_entries ["nj"] , pt_units  ["nj"],
+                     gt_entries ["nj"] ,
+                     gr_entries ["nj"] ,
+                     f_entries  ["nj"] , f_units   ["nj"],
+                     r_entries  ["nj"] , r_units   ["nj"],
+                     lt_entries ["nj"] ,
+                     la_entries ["nj"] ,
+                     lr_entries ["nj"] 
+                     )
     
-    # graph_rj = GraphJammer("rj", rj_error, 
-    #                  pr_entries ["rj"] , pr_units  ["rj"],
-    #                  pt_entries ["rj"] , pt_units  ["rj"],
-    #                  gt_entries ["rj"] , gr_entries["rj"],
-    #                  f_entries  ["rj"] , f_units   ["rj"],
-    #                  rcs_entries["rj"] , rcs_units ["rj"],
-    #                  r_entries  ["rj"] , r_units   ["rj"])
+    graph_rj = GraphJammer("rj", rj_error, 
+                     pr_entries ["rj"] , pr_units  ["rj"],
+                     pt_entries ["rj"] , pt_units  ["rj"],
+                     gt_entries ["rj"] ,
+                     gr_entries ["rj"] ,
+                     f_entries  ["rj"] , f_units   ["rj"],
+                     r_entries  ["rj"] , r_units   ["rj"],
+                     lt_entries ["rj"] ,
+                     la_entries ["rj"] ,
+                     lr_entries ["rj"] 
+                     )
 
     # Clear, initialize, and plot graph
     fig.clear()
     ax = fig.add_subplot(111)
     ax.plot(graph_pr.x_values, graph_pr.y_values, label="Received Power")
-    # ax.plot(graph_nj.x_values, graph_nj.y_values, label="Noise Jammer")
-    # ax.plot(graph_rj.x_values, graph_rj.y_values, label="Repeater Jammer")
+    ax.plot(graph_nj.x_values, graph_nj.y_values, label="Noise Jammer")
+    ax.plot(graph_rj.x_values, graph_rj.y_values, label="Repeater Jammer")
     ax.set_xlabel(f"Range ({plot_x_unit.get()})")
     ax.set_ylabel(f"Received Power {plot_y_unit.get()}")
     ax.legend(loc="upper right")
@@ -394,7 +443,7 @@ def validate_entries(column):
     for child in root.winfo_children():
         if isinstance(child, tkinter.Entry):
             info = child.grid_info()
-            if info['column'] == column and info['row'] <= 7:
+            if info['column'] == column and info['row'] <= 12:
                 value = child.get()
 
                 if any(char.isalpha() for char in value) or \
@@ -408,13 +457,15 @@ def validate_entries(column):
                 elif value == "":
                     blank_entries.append(child)
 
-    # Handle multiple blank entries
-    if len(blank_entries) > 1:
+    
+    if (column == 1 and len(blank_entries) == 7) or (column in [3, 5] and len(blank_entries) == 9):
+        error_found = True
+    elif len(blank_entries) > 1:
         for entry in blank_entries:
             entry.delete(0, tkinter.END)
             entry.insert(0, "invalid input")
             entry.config(fg="red")
-            error_found = True
+        error_found = True
 
     return error_found
 
