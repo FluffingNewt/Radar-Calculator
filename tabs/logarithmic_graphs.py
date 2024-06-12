@@ -36,7 +36,7 @@ class Tab2(tkinter.Frame):
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
                     
-                    self.pwr_t = f.rre_pt(self.pwr_r, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
+                    self.pwr_t = f.rre_log_pt(self.pwr_r, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
 
                     if   pwr_t_u.get() == "dBW" : pwr_t = f.convert_to_dBW(self.pwr_t, "W")
                     elif pwr_t_u.get() == "dBm" : pwr_t = f.convert_to_dBm(self.pwr_t, "W")
@@ -55,7 +55,7 @@ class Tab2(tkinter.Frame):
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
 
-                    self.gain_t = f.rre_gt(self.pwr_r, self.pwr_t, self.gain_r, self.freq, self.rcs, self.r)
+                    self.gain_t = f.rre_log_gt(self.pwr_r, self.pwr_t, self.gain_r, self.freq, self.rcs, self.r)
 
                     gt_entries["pr"].insert(0, f"{self.gain_t}")
 
@@ -69,7 +69,7 @@ class Tab2(tkinter.Frame):
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
 
-                    self.gain_r = f.rre_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.rcs, self.r)
+                    self.gain_r = f.rre_log_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.rcs, self.r)
 
                     gr_entries["pr"].insert(0, f"{self.gain_r}")
                     
@@ -83,7 +83,7 @@ class Tab2(tkinter.Frame):
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
 
-                    self.freq = f.rre_f(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.rcs, self.r)
+                    self.freq = f.rre_log_f(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.rcs, self.r)
 
                     if   freq_u.get() == "GHz" : freq = f.convert_to_GHz(self.freq, "Hz")
                     elif freq_u.get() == "MHz" : freq = f.convert_to_MHz(self.freq, "Hz")
@@ -102,7 +102,7 @@ class Tab2(tkinter.Frame):
                     self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
 
-                    self.rcs = f.rre_rcs(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r)
+                    self.rcs = f.rre_log_rcs(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r)
 
                     if   rcs_u.get() == "m\u00B2"  : rcs = f.convert_to_m2(self.rcs, "m\u00B2")
                     elif rcs_u.get() == "ft\u00B2" : rcs = f.convert_to_ft2(self.rcs, "m\u00B2")
@@ -119,7 +119,7 @@ class Tab2(tkinter.Frame):
                     self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
 
-                    self.r = f.rre_r(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs)
+                    self.r = f.rre_log_r(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs)
 
                     if   r_u.get() == "NMI" : r = f.convert_to_NMI(self.r, "m")
                     elif r_u.get() == "mi"  : r = f.convert_to_mi(self.r, "m")
@@ -140,7 +140,7 @@ class Tab2(tkinter.Frame):
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
 
-                    self.pwr_r = f.rre_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
+                    self.pwr_r = f.rre_log_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
 
                     if   pwr_r_u.get() == "dBW" : pwr_r = f.convert_to_dBW(self.pwr_r, "W")
                     elif pwr_r_u.get() == "dBm" : pwr_r = f.convert_to_dBm(self.pwr_r, "W")
@@ -159,7 +159,7 @@ class Tab2(tkinter.Frame):
 
                 i = 0
                 for range in self.x_values:
-                    pr = f.rre_pr(pwr_t_values[i], self.gain_t, self.gain_r, self.freq, self.rcs, range)
+                    pr = f.rre_log_pr(pwr_t_values[i], self.gain_t, self.gain_r, self.freq, self.rcs, range)
                     self.y_values.append(pr)
                     i += 1
 
@@ -214,7 +214,7 @@ class Tab2(tkinter.Frame):
                     self.loss_a = float(loss_a.get())
                     self.loss_r = float(loss_r.get())
                     
-                    self.pwr_t = f.rre_j_pt(self.pwr_r, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
+                    self.pwr_t = f.rre_log_j_pt(self.pwr_r, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
 
                     if   pwr_t_u.get() == "dBW" : pwr_t = f.convert_to_dBW(self.pwr_t, "W")
                     elif pwr_t_u.get() == "dBm" : pwr_t = f.convert_to_dBm(self.pwr_t, "W")
@@ -235,7 +235,7 @@ class Tab2(tkinter.Frame):
                     self.loss_a = float(loss_a.get())
                     self.loss_r = float(loss_r.get())
 
-                    self.gain_t = f.rre_j_gt(self.pwr_r, self.pwr_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
+                    self.gain_t = f.rre_log_j_gt(self.pwr_r, self.pwr_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
 
                     gt_entries[type].insert(0, f"{self.gain_t}")
 
@@ -251,7 +251,7 @@ class Tab2(tkinter.Frame):
                     self.loss_a = float(loss_a.get())
                     self.loss_r = float(loss_r.get())
 
-                    self.gain_r = f.rre_j_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
+                    self.gain_r = f.rre_log_j_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
 
                     gr_entries[type].insert(0, f"{self.gain_r}")
 
@@ -267,7 +267,7 @@ class Tab2(tkinter.Frame):
                     self.loss_a = float(loss_a.get())
                     self.loss_r = float(loss_r.get())
 
-                    self.freq = f.rre_j_f(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.r, self.loss_t, self.loss_a, self.loss_r)
+                    self.freq = f.rre_log_j_f(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.r, self.loss_t, self.loss_a, self.loss_r)
 
                     if   freq_u.get() == "GHz" : freq = f.convert_to_GHz(self.freq, "Hz")
                     elif freq_u.get() == "MHz" : freq = f.convert_to_MHz(self.freq, "Hz")
@@ -288,7 +288,7 @@ class Tab2(tkinter.Frame):
                     self.loss_a = float(loss_a.get())
                     self.loss_r = float(loss_r.get())
 
-                    self.r = f.rre_j_r(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.loss_t, self.loss_a, self.loss_r)
+                    self.r = f.rre_log_j_r(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.loss_t, self.loss_a, self.loss_r)
 
                     if   r_u.get() == "NMI" : r = f.convert_to_NMI(self.r, "m")
                     elif r_u.get() == "mi"  : r = f.convert_to_mi(self.r, "m")
@@ -309,7 +309,7 @@ class Tab2(tkinter.Frame):
                     self.loss_a = float(loss_a.get())
                     self.loss_r = float(loss_r.get())
 
-                    self.loss_t = f.rre_j_lt(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_a, self.loss_r)
+                    self.loss_t = f.rre_log_j_lt(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_a, self.loss_r)
 
                     lt_entries[type].insert(0, f"{self.loss_t}")
 
@@ -325,7 +325,7 @@ class Tab2(tkinter.Frame):
                     self.loss_t = float(loss_t.get())
                     self.loss_r = float(loss_r.get())
 
-                    self.loss_a = f.rre_j_la(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_r)
+                    self.loss_a = f.rre_log_j_la(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_r)
 
                     la_entries[type].insert(0, f"{self.loss_a}")
 
@@ -341,7 +341,7 @@ class Tab2(tkinter.Frame):
                     self.loss_t = float(loss_t.get())
                     self.loss_a = float(loss_a.get())
 
-                    self.loss_r = f.rre_j_lr(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a)
+                    self.loss_r = f.rre_log_j_lr(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a)
 
                     lr_entries[type].insert(0, f"{self.loss_r}")
 
@@ -359,7 +359,7 @@ class Tab2(tkinter.Frame):
                     self.loss_a = float(loss_a.get())
                     self.loss_r = float(loss_r.get())
 
-                    self.pwr_r = f.rre_j_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
+                    self.pwr_r = f.rre_log_j_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r, self.loss_t, self.loss_a, self.loss_r)
 
                     if   pwr_r_u.get() == "dBW" : pwr_r = f.convert_to_dBW(self.pwr_r, "W")
                     elif pwr_r_u.get() == "dBm" : pwr_r = f.convert_to_dBm(self.pwr_r, "W")
@@ -379,7 +379,7 @@ class Tab2(tkinter.Frame):
 
                 i = 0
                 for range in self.x_values:
-                    pr = f.rre_j_pr(pwr_t_values[i], self.gain_t, self.gain_r, self.freq, range, self.loss_t, self.loss_a, self.loss_r)   
+                    pr = f.rre_log_j_pr(pwr_t_values[i], self.gain_t, self.gain_r, self.freq, range, self.loss_t, self.loss_a, self.loss_r)   
                     self.y_values.append(pr)
                     i += 1
 

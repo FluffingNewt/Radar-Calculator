@@ -60,21 +60,28 @@ $Lr$ : Loss - Receiver Component
 <br>
 
 ## Frequency
+
 ### Linear:
 $\displaystyle \boldsymbol{
-λ = \frac{c}{v}}
+λ = \frac{c}{f}}
 $
 
 ### Logarithmic:
+$\displaystyle \boldsymbol{
+λ = 10\log_{10}(c) - 10\log_{10}(f)
+}$
+
 
 <br>
+
 <p style="margin-bottom: 5px;"><b>Units:</b></p>
 
 $λ$ : Wavelength ( $m$ )  
-$v$ : Frequency ( $Hz$ )  
+$f$ : Frequency ( $Hz$ )  
 $c$ : Speed of Light ( $299,792,458 \space m/s$ )
 
 <br>
 
 ## Known Bugs/Issues
-- If "-" is found within an input, no error will be raised, as negative numbers are enabled.
+- If "-" is found within an input, no logged error will be raised, as negative numbers are enabled.
+- If "e" is found within an input (not including "E"), no logged error will be raised, as some calculations result in a scientific notation output.

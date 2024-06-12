@@ -478,6 +478,8 @@ class Tab1(tkinter.Frame):
             error_found = False
 
             special_chars = "[$&+,:;=?@#|'\"<>_^*()%!]"
+            letters = "abcdfghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
 
             # Loop through all children of the self window
             for child in self.winfo_children():
@@ -486,7 +488,7 @@ class Tab1(tkinter.Frame):
                     if info['column'] == column and info['row'] <= 12:
                         value = child.get()
 
-                        if any(char.isalpha() for char in value) or \
+                        if any(char in value for char in letters) or \
                         any(char in value for char in special_chars) or \
                         value in ["0", "0.0"]:
                             print(f"Error: Invalid input '{value}' in row {info['row']}")
