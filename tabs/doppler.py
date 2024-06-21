@@ -57,7 +57,7 @@ class Tab3(tkinter.Frame):
 
 
         def create_label(self, text, row, column, padx=10, pady=5, sticky="w", columnspan=1):
-            label = tkinter.Label(self, text=text, font=Tab4.bold_font)
+            label = tkinter.Label(self, text=text, font=Tab3.bold_font)
             label.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady, sticky=sticky)
             return label
 
@@ -69,7 +69,7 @@ class Tab3(tkinter.Frame):
             return entry
 
         def create_combobox(self, textvariable, values, row, column, width=6, pady=10, sticky=""):
-            combobox = ttk.Combobox(self, textvariable=textvariable, values=values, font=Tab4.default_font, state="readonly", width=width)
+            combobox = ttk.Combobox(self, textvariable=textvariable, values=values, font=Tab3.default_font, state="readonly", width=width)
             combobox.grid(row=row, column=column, pady=pady, sticky=sticky)
             return combobox
 
