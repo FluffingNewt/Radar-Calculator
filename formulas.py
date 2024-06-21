@@ -4,7 +4,10 @@ units_NMI  = ["NMI", "mi", "m", "ft"]
 units_dBW  = ["dBW", "dBm", "W", "mW"]
 units_GHz  = ["GHz", "MHz", "Hz", "kHz"]
 units_rcs  = ["m\u00B2", "ft\u00B2"]
+units_vel  = ["m/s"]
 
+
+c = 299792458.0
 
 #!###### Unit Conversions #####!#
 
@@ -113,7 +116,7 @@ def convert_to_ft2(value, unit):
     if   unit == "m\u00B2" : return value * 10.7639
     else                   : return value # Passthrough
 
-#!###### RRE Formulas ######!#
+#!###### Linear RRE Formulas ######!#
 
 def rre_pr(pt, gt, gr, f, rcs, r):
     w = 299792458.0 / f
@@ -162,7 +165,7 @@ def rre_r(pr, pt, gt, gr, f, rcs):
     denom =  pr * (4 * math.pi)**3
     return (numer / denom)**0.25
 
-#!###### RRE Jammer Formulas ######!#
+#!###### Linear RRE Jammer Formulas ######!#
 
 def rre_j_pr(pt, gt, gr, f, r, lt, la, lr):
     w = 299792458.0 / f
@@ -224,3 +227,71 @@ def rre_j_lr(pr, pt, gt, gr, f, r, lt, la):
     numer = pt * gt * gr * (w**2)
     denom = pr * (4 * math.pi)**2 * (r**2) * lt * la
     return numer / denom
+
+#!###### Logarithmic RRE Formulas ######!#
+
+def rre_log_pr(pt, gt, gr, f, rcs, r):
+    return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 20 * math.log10(c) + 10 * math.log10(rcs) - 30 * math.log10(4 * math.pi) - 20 * math.log10(f) - 40 * math.log10(r)
+
+def rre_log_pt(pr, gt, gr, f, rcs, r):
+    return 10 * math.log10(pr) - 10 * math.log10(gt) - 10 * math.log10(gr) - 20 * math.log10(c) - 10 * math.log10(rcs) + 30 * math.log10(4 * math.pi) + 20 * math.log10(f) + 40 * math.log10(r)
+
+def rre_log_gt(pr, pt, gr, f, rcs, r):
+    return 10 * math.log10(pr) - 10 * math.log10(pt) - 10 * math.log10(gr) - 20 * math.log10(c) - 10 * math.log10(rcs) + 30 * math.log10(4 * math.pi) + 20 * math.log10(f) + 40 * math.log10(r)
+
+def rre_log_gr(pr, pt, gt, f, rcs, r):
+    return 10 * math.log10(pr) - 10 * math.log10(pt) - 10 * math.log10(gt) - 20 * math.log10(c) - 10 * math.log10(rcs) + 30 * math.log10(4 * math.pi) + 20 * math.log10(f) + 40 * math.log10(r)
+
+def rre_log_rcs(pr, pt, gt, gr, f, r):
+    return 10 * math.log10(pr) - 10 * math.log10(pt) - 10 * math.log10(gt) - 10 * math.log10(gr) - 20 * math.log10(c) + 30 * math.log10(4 * math.pi) + 20 * math.log10(f) + 40 * math.log10(r)
+
+def rre_log_f(pr, pt, gt, gr, rcs, r):
+    freq = 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 20 * math.log10(c) + 10 * math.log10(rcs) - 10 * math.log10(pr) - 30 * math.log10(4 * math.pi) - 40 * math.log10(r)
+    return freq / 2
+
+def rre_log_r(pr, pt, gt, gr, f, rcs):
+    r = 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 20 * math.log10(c) + 10 * math.log10(rcs) - 10 * math.log10(pr) - 30 * math.log10(4 * math.pi) - 20 * math.log10(f)
+    return r / 4
+
+#!###### Logarithmic RRE Jammer Formulas ######!#
+
+def rre_log_j_pr(pt, gt, gr, f, r, lt, la, lr):
+    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+    return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(lt) - 10 * math.log10(la) - 10 * math.log10(lr)
+
+def rre_log_j_pt(pr, gt, gr, f, r, lt, la, lr):
+    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+    return 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) - 10 * math.log10(gt) - 10 * math.log10(gr) - 2 * wavelength + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr)
+
+def rre_log_j_gt(pr, pt, gr, f, r, lt, la, lr):
+    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+    return 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) - 10 * math.log10(pt) - 10 * math.log10(gr) - 2 * wavelength + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr)
+
+def rre_log_j_gr(pr, pt, gt, f, r, lt, la, lr):
+    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+    return 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) - 10 * math.log10(pt) - 10 * math.log10(gt) - 2 * wavelength + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr)
+
+def rre_log_j_f(pr, pt, gt, gr, r, lt, la, lr):
+    wavelength = 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr) - 10 * math.log10(pt) - 10 * math.log10(gt) + 10 * math.log10(gr)
+    return 10 * math.log10(c) - 0.5 * wavelength
+
+def rre_log_j_r(pr, pt, gt, gr, f, lt, la, lr):
+    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+    return 0.5 * (10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 10 * math.log10(lt) - 10 * math.log10(la) - 10 * math.log10(lr))
+
+def rre_log_j_lt(pr, pt, gt, gr, f, r, la, lr):
+    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+    return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(la) - 10 * math.log10(lr)
+
+def rre_log_j_la(pr, pt, gt, gr, f, r, lt, lr):
+    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+    return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(lt) - 10 * math.log10(lr)
+
+def rre_log_j_lr(pr, pt, gt, gr, f, r, lt, la):
+    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+    return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(lt) - 10 * math.log10(la)
+
+#! Doppler Equation
+
+def doppler():
+    return
