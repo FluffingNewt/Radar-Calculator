@@ -151,7 +151,6 @@ class Tab2(tkinter.Frame):
 
                     print(f"\nGraph type - Pr:  Pr = {pwr_r} {pwr_r_u.get()}")
 
-
                 # generate x and y values
                 self.x_values = numpy.linspace(1, self.r, 400)
                 self.y_values = []
