@@ -293,5 +293,11 @@ def rre_log_j_lr(pr, pt, gt, gr, f, r, lt, la):
 
 #! Doppler Equation
 
-def doppler():
-    return
+def doppler_v(fd, f):
+    return (fd * c) / (2 * f)
+
+def doppler_f(fd, v):
+    return (fd * c) / (2 * v)
+
+def doppler_fd(v, f):
+    return (2 * v * f) / c
