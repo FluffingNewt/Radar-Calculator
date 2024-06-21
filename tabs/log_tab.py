@@ -6,7 +6,12 @@ from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
+#* Notes
+#* - Converts the input values into 10*log_10 values and calculates Pr
+#* - If a value is empty, it will fill the box with the normal base10 version of the value.
+
 #! To-Do
+#!
 
 class Tab2(tkinter.Frame):
     
