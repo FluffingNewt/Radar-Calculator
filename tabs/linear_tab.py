@@ -1,8 +1,7 @@
-import formulas as f
-import methods as m
+import lib.formulas as f
+import lib.methods as m
 import numpy
 import tkinter
-from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
