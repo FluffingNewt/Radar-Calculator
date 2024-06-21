@@ -6,7 +6,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
 #! To-Do
-#! - Implement Alternative Log functions for each calculation
 
 class Tab3(tkinter.Frame):
 
@@ -402,4 +401,4 @@ class Tab3(tkinter.Frame):
         canvas.draw()
 
         ax.set_xlabel(f"Range ({plot_x_unit.get()})")
-        ax.set_ylabel(f"Received Power {plot_y_unit.get()}")
+        ax.set_ylabel(f"Received Power (10log {plot_y_unit.get()})")
