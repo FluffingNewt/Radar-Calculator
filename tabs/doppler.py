@@ -2,11 +2,9 @@ import formulas as f
 import numpy
 import tkinter
 from tkinter import ttk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
 
 
-class Tab4(tkinter.Frame):
+class Tab3(tkinter.Frame):
 
     default_font = ('Arial', 12)
     bold_font    = ("Arial", 12, "bold")

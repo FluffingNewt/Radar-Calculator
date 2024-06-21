@@ -7,7 +7,7 @@ from matplotlib.figure import Figure
 
 #! To-Do
 
-class Tab3(tkinter.Frame):
+class Tab2(tkinter.Frame):
 
     default_font = ('Arial', 12)
     bold_font    = ("Arial", 12, "bold")
