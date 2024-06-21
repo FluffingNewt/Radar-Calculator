@@ -33,14 +33,15 @@ class Tab3(tkinter.Frame):
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
                     
-                    self.pwr_t = f.rre_log_pt(self.pwr_r, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
+                    log_pwr_t = f.rre_log_pt(self.pwr_r, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
+                    self.pwr_t = 10 ** (log_pwr_t / 10)
 
                     if   pwr_t_u.get() == "dBW" : pwr_t = f.convert_to_dBW(self.pwr_t, "W")
                     elif pwr_t_u.get() == "dBm" : pwr_t = f.convert_to_dBm(self.pwr_t, "W")
                     elif pwr_t_u.get() == "W"   : pwr_t = f.convert_to_W(self.pwr_t, "W")
                     elif pwr_t_u.get() == "mW"  : pwr_t = f.convert_to_mW(self.pwr_t, "W")
 
-                    pt_entries["pr"].insert(0, f"{pwr_t}")
+                    pt_entries["pr"].insert(0, f"{self.pwr_t}")
 
                     print(f"\nGraph type - Pr:  Pt = {self.pwr_t} {pwr_t_u.get()}")
 
@@ -52,7 +53,8 @@ class Tab3(tkinter.Frame):
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
 
-                    self.gain_t = f.rre_log_gt(self.pwr_r, self.pwr_t, self.gain_r, self.freq, self.rcs, self.r)
+                    log_gain_t = f.rre_log_gt(self.pwr_r, self.pwr_t, self.gain_r, self.freq, self.rcs, self.r)
+                    self.gain_t = 10 ** (log_gain_t / 10)
 
                     gt_entries["pr"].insert(0, f"{self.gain_t}")
 
@@ -66,7 +68,8 @@ class Tab3(tkinter.Frame):
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
 
-                    self.gain_r = f.rre_log_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.rcs, self.r)
+                    log_gain_r = f.rre_log_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.rcs, self.r)
+                    self.gain_r = 10 ** (log_gain_r / 10)
 
                     gr_entries["pr"].insert(0, f"{self.gain_r}")
                     
@@ -80,7 +83,8 @@ class Tab3(tkinter.Frame):
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
 
-                    self.freq = f.rre_log_f(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.rcs, self.r)
+                    log_freq = f.rre_log_f(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.rcs, self.r)
+                    self.freq = 10 ** (log_freq / 10)
 
                     if   freq_u.get() == "GHz" : freq = f.convert_to_GHz(self.freq, "Hz")
                     elif freq_u.get() == "MHz" : freq = f.convert_to_MHz(self.freq, "Hz")
@@ -99,7 +103,8 @@ class Tab3(tkinter.Frame):
                     self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
 
-                    self.rcs = f.rre_log_rcs(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r)
+                    log_rcs = f.rre_log_rcs(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r)
+                    self.rcs = 10 ** (log_rcs / 10)
 
                     if   rcs_u.get() == "m\u00B2"  : rcs = f.convert_to_m2(self.rcs, "m\u00B2")
                     elif rcs_u.get() == "ft\u00B2" : rcs = f.convert_to_ft2(self.rcs, "m\u00B2")
@@ -116,7 +121,8 @@ class Tab3(tkinter.Frame):
                     self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
 
-                    self.r = f.rre_log_r(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs)
+                    log_r = f.rre_log_r(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs)
+                    self.r = 10 ** (log_r / 10)
 
                     if   r_u.get() == "NMI" : r = f.convert_to_NMI(self.r, "m")
                     elif r_u.get() == "mi"  : r = f.convert_to_mi(self.r, "m")
@@ -137,7 +143,8 @@ class Tab3(tkinter.Frame):
                     self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
                     self.r      = f.convert_to_m(r.get(), r_u.get())
 
-                    self.pwr_r = f.rre_log_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
+                    log_pwr_r = f.rre_log_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
+                    self.pwr_r = 10 ** (log_pwr_r / 10)
 
                     if   pwr_r_u.get() == "dBW" : pwr_r = f.convert_to_dBW(self.pwr_r, "W")
                     elif pwr_r_u.get() == "dBm" : pwr_r = f.convert_to_dBm(self.pwr_r, "W")
@@ -147,6 +154,7 @@ class Tab3(tkinter.Frame):
                     pr_entries["pr"].insert(0, f"{pwr_r}")
 
                     print(f"\nGraph type - Pr:  Pr = {pwr_r} {pwr_r_u.get()}")
+                    print(f"               10log = {log_pwr_r} {pwr_r_u.get()}")
 
                 # generate x and y values
                 self.x_values = numpy.linspace(1, self.r, 100)
@@ -155,6 +163,7 @@ class Tab3(tkinter.Frame):
                 for range in self.x_values:
                     pr = f.rre_log_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs, range)
                     self.y_values.append(pr)
+                
 
                 self.convert_x_values(plot_x_unit.get())
                 self.convert_y_values(plot_y_unit.get())

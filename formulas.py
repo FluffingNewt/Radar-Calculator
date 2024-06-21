@@ -231,26 +231,26 @@ def rre_j_lr(pr, pt, gt, gr, f, r, lt, la):
 #!###### Logarithmic RRE Formulas ######!#
 
 def rre_log_pr(pt, gt, gr, f, rcs, r):
-    return 10 * math.log(pt) + 10 * math.log(gt) + 10 * math.log(gr) + 20 * math.log(c) + 10 * math.log(rcs) - 30 * math.log(4 * math.pi) - 20 * math.log(f) - 40 * math.log(r)
+    return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 20 * math.log10(c) + 10 * math.log10(rcs) - 30 * math.log10(4 * math.pi) - 20 * math.log10(f) - 40 * math.log10(r)
 
 def rre_log_pt(pr, gt, gr, f, rcs, r):
-    return 10 * math.log(pr) - 10 * math.log(gt) - 10 * math.log(gr) - 20 * math.log(c) - 10 * math.log(rcs) + 30 * math.log(4 * math.pi) + 20 * math.log(f) + 40 * math.log(r)
+    return 10 * math.log10(pr) - 10 * math.log10(gt) - 10 * math.log10(gr) - 20 * math.log10(c) - 10 * math.log10(rcs) + 30 * math.log10(4 * math.pi) + 20 * math.log10(f) + 40 * math.log10(r)
 
 def rre_log_gt(pr, pt, gr, f, rcs, r):
-    return 10 * math.log(pr) - 10 * math.log(pt) - 10 * math.log(gr) - 20 * math.log(c) - 10 * math.log(rcs) + 30 * math.log(4 * math.pi) + 20 * math.log(f) + 40 * math.log(r)
+    return 10 * math.log10(pr) - 10 * math.log10(pt) - 10 * math.log10(gr) - 20 * math.log10(c) - 10 * math.log10(rcs) + 30 * math.log10(4 * math.pi) + 20 * math.log10(f) + 40 * math.log10(r)
 
 def rre_log_gr(pr, pt, gt, f, rcs, r):
-    return 10 * math.log(pr) - 10 * math.log(pt) - 10 * math.log(gt) - 20 * math.log(c) - 10 * math.log(rcs) + 30 * math.log(4 * math.pi) + 20 * math.log(f) + 40 * math.log(r)
-
-def rre_log_f(pr, pt, gt, gr, rcs, r):
-    freq = 10 * math.log(pr) - 10 * math.log(pt) - 10 * math.log(gt) - 10 * math.log(gr) - 20 * math.log(c) - 10 * math.log(rcs) + 30 * math.log(4 * math.pi) + 40 * math.log(r)
-    return freq / 2
+    return 10 * math.log10(pr) - 10 * math.log10(pt) - 10 * math.log10(gt) - 20 * math.log10(c) - 10 * math.log10(rcs) + 30 * math.log10(4 * math.pi) + 20 * math.log10(f) + 40 * math.log10(r)
 
 def rre_log_rcs(pr, pt, gt, gr, f, r):
-    return 10 * math.log(pr) - 10 * math.log(pt) - 10 * math.log(gt) - 10 * math.log(gr) - 20 * math.log(c) + 30 * math.log(4 * math.pi) + 20 * math.log(f) + 40 * math.log(r)
+    return 10 * math.log10(pr) - 10 * math.log10(pt) - 10 * math.log10(gt) - 10 * math.log10(gr) - 20 * math.log10(c) + 30 * math.log10(4 * math.pi) + 20 * math.log10(f) + 40 * math.log10(r)
+
+def rre_log_f(pr, pt, gt, gr, rcs, r):
+    freq = 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 20 * math.log10(c) + 10 * math.log10(rcs) - 10 * math.log10(pr) - 30 * math.log10(4 * math.pi) - 40 * math.log10(r)
+    return freq / 2
 
 def rre_log_r(pr, pt, gt, gr, f, rcs):
-    r = 10 * math.log(pr) - 10 * math.log(pt) - 10 * math.log(gt) - 10 * math.log(gr) - 20 * math.log(c) - math.log(rcs) + 30 * math.log(4 * math.pi) + 20 * math.log(f) + 40 * math.log(r)
+    r = 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 20 * math.log10(c) + 10 * math.log10(rcs) - 10 * math.log10(pr) - 30 * math.log10(4 * math.pi) - 20 * math.log10(f)
     return r / 4
 
 #!###### Logarithmic RRE Jammer Formulas ######!#
