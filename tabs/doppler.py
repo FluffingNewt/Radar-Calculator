@@ -13,54 +13,20 @@ class Tab3(tkinter.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        def validate_entries(column):
-            blank_entries = []
-            error_found = False
+        def calc_doppler(v, ft, fd):
+            return
 
-            special_chars = "[$&+,:;=?@#|'\"<>_^*()%!]"
-
-            # Loop through all children of the self window
-            for child in self.winfo_children():
-                if isinstance(child, tkinter.Entry):
-                    info = child.grid_info()
-                    if info['column'] == column and info['row'] <= 12:
-                        value = child.get()
-
-                        if any(char.isalpha() for char in value) or \
-                        any(char in value for char in special_chars) or \
-                        value in ["0", "0.0"]:
-                            print(f"Error: Invalid input '{value}' in row {info['row']}")
-                            child.delete(0, tkinter.END)
-                            child.insert(0, "invalid input")
-                            child.config(fg="red")
-                            error_found = True
-                        elif value == "":
-                            blank_entries.append(child)
-
-            
-            if (column == 1 and len(blank_entries) == 7) or (column in [3, 5] and len(blank_entries) == 9):
-                error_found = True
-            elif len(blank_entries) > 1:
-                for entry in blank_entries:
-                    entry.delete(0, tkinter.END)
-                    entry.insert(0, "invalid input")
-                    entry.config(fg="red")
-                error_found = True
-
-            return error_found
-
+        
 
         def reset_entry(event, entry):
             if entry.get() == "invalid input":
                 entry.delete(0, tkinter.END)
                 entry.config(fg="black")
 
-
         def create_label(self, text, row, column, padx=10, pady=5, sticky="w", columnspan=1):
             label = tkinter.Label(self, text=text, font=Tab3.bold_font)
             label.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady, sticky=sticky)
             return label
-
 
         def create_entry(self, row, column, padx=0 , pady=10):
             entry = tkinter.Entry(self)
@@ -99,4 +65,15 @@ class Tab3(tkinter.Frame):
         create_label(self, "ft : Transmit Frequency", row, col)
         ft_entry = create_entry(self, row, col+1, 10)
         ft_unit = tkinter.StringVar(value="GHz")
+        create_combobox(self, ft_unit, f.units_GHz, row, col+2)
+
+        row = 4
+        col = 0
+        create_separator(self, "horizontal", row, col, 0)
+
+        row = 5
+        col = 0
+        create_label(self, "fd : Doppler Frequency", row, col)
+        fd_entry = create_entry(self, row, col+1, 10)
+        fd_unit = tkinter.StringVar(value="GHz")
         create_combobox(self, ft_unit, f.units_GHz, row, col+2)

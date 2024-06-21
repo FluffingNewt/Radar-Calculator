@@ -290,3 +290,8 @@ def rre_log_j_la(pr, pt, gt, gr, f, r, lt, lr):
 def rre_log_j_lr(pr, pt, gt, gr, f, r, lt, la):
     wavelength = 10 * math.log10(c) - 10 * math.log10(f)
     return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(lt) - 10 * math.log10(la)
+
+#! Doppler Equation
+
+def doppler():
+    return

@@ -1,4 +1,5 @@
 import formulas as f
+import methods as m
 import numpy
 import tkinter
 from tkinter import ttk
@@ -8,8 +9,7 @@ from matplotlib.figure import Figure
 
 class Tab1(tkinter.Frame):
 
-    default_font = ('Arial', 12)
-    bold_font    = ("Arial", 12, "bold")
+    
     graph_types  = ["pr", "nj", "rj"]
 
 
@@ -423,9 +423,10 @@ class Tab1(tkinter.Frame):
 
             # Check if all text fields have valid inputs
             for i in range(1, 6, 2):
-                if   i == 1: pr_error = validate_entries(i)
-                elif i == 3: nj_error = validate_entries(i)
-                elif i == 5: rj_error = validate_entries(i)
+                error = m.validate_entries(self, i, 12)
+                if   i == 1: pr_error = error
+                elif i == 3: nj_error = error
+                elif i == 5: rj_error = error
 
             self.focus_set()
 
@@ -472,113 +473,43 @@ class Tab1(tkinter.Frame):
             ax.legend(loc="upper right")
             canvas.draw()
 
-        
-        def validate_entries(column):
-            blank_entries = []
-            error_found = False
-
-            special_chars = "[$&+,:;=?@#|'\"<>_^*()%!]"
-            letters = "abcdfghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-
-            # Loop through all children of the self window
-            for child in self.winfo_children():
-                if isinstance(child, tkinter.Entry):
-                    info = child.grid_info()
-                    if info['column'] == column and info['row'] <= 12:
-                        value = child.get()
-
-                        if any(char in value for char in letters) or \
-                        any(char in value for char in special_chars) or \
-                        value in ["0", "0.0"]:
-                            print(f"Error: Invalid input '{value}' in row {info['row']}")
-                            child.delete(0, tkinter.END)
-                            child.insert(0, "invalid input")
-                            child.config(fg="red")
-                            error_found = True
-                        elif value == "":
-                            blank_entries.append(child)
-
-            
-            if (column == 1 and len(blank_entries) == 7) or (column in [3, 5] and len(blank_entries) == 9):
-                error_found = True
-            elif len(blank_entries) > 1:
-                for entry in blank_entries:
-                    entry.delete(0, tkinter.END)
-                    entry.insert(0, "invalid input")
-                    entry.config(fg="red")
-                error_found = True
-
-            return error_found
-
-
-        def reset_entry(event, entry):
-            if entry.get() == "invalid input":
-                entry.delete(0, tkinter.END)
-                entry.config(fg="black")
-
-
-        def create_label(self, text, row, column, padx=10, pady=5, sticky="w", columnspan=1):
-            label = tkinter.Label(self, text=text, font=Tab1.bold_font)
-            label.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady, sticky=sticky)
-            return label
-
-
-        def create_entry(self, row, column, padx=0 , pady=10):
-            entry = tkinter.Entry(self)
-            entry.grid(row=row, column=column, padx=padx, pady=pady, sticky="w")
-            entry.bind("<FocusIn>", lambda event: reset_entry(event, entry))
-            return entry
-
-
-        def create_combobox(self, textvariable, values, row, column, width=6, pady=10, sticky=""):
-            combobox = ttk.Combobox(self, textvariable=textvariable, values=values, font=Tab1.default_font, state="readonly", width=width)
-            combobox.grid(row=row, column=column, pady=pady, sticky=sticky)
-            return combobox
-
-        def create_separator(self, orient, row, column, padx=0, pady=0):
-            separator = ttk.Separator(self, orient=orient)
-            if orient == "horizontal" : separator.grid(row=row, column=column, rowspan=1 ,columnspan=10 , sticky="ew", padx=padx, pady=pady)
-            else                      : separator.grid(row=row, column=column, rowspan=14 ,columnspan=1 , sticky="nsw", padx=padx, pady=pady)
-            
-
 
         ###################################### GUI Setup ########################################
 
         # Header Labels
-        create_label(self, "Received Power" , 0, 1, 10, 5, "ew", 2)
-        create_label(self, "Noise Jammer"   , 0, 3, 10, 5, "ew", 2)
-        create_label(self, "Repeater Jammer", 0, 5, 10, 5, "ew", 2)
+        m.create_label(self, "Received Power" , 0, 1, 10, 5, "ew", 2)
+        m.create_label(self, "Noise Jammer"   , 0, 3, 10, 5, "ew", 2)
+        m.create_label(self, "Repeater Jammer", 0, 5, 10, 5, "ew", 2)
 
         row = 2
         col = 0
         # Power Transmitted
         pt_entries = {}
         pt_units = {}
-        create_label(self, "Pt : Power Transmitted", row, col)
+        m.create_label(self, "Pt : Power Transmitted", row, col)
         for type in Tab1.graph_types:
-            pt_entries[type] = create_entry(self, row, col+1, 10)
+            pt_entries[type] = m.create_entry(self, row, col+1, 10)
             pt_units[type] = tkinter.StringVar(value="dBW")
-            create_combobox(self, pt_units[type], f.units_dBW, row, col+2)
-            create_separator(self, "vertical", 0, col+1, 5)
+            m.create_combobox(self, pt_units[type], f.units_dBW, row, col+2)
+            m.create_separator(self, "vertical", 0, col+1, 5)
             col += 2
 
         row = 3
         col = 0
         # Gain Transmitted
         gt_entries = {}
-        create_label(self, "Gt : Gain Transmitted", row, col)
+        m.create_label(self, "Gt : Gain Transmitted", row, col)
         for type in Tab1.graph_types:
-            gt_entries[type] = create_entry(self, row, col+1, 10)
+            gt_entries[type] = m.create_entry(self, row, col+1, 10)
             col += 2
 
         row = 4
         col = 0
         # Gain Received
         gr_entries = {}
-        create_label(self, "Gr : Gain Received", row, col)
+        m.create_label(self, "Gr : Gain Received", row, col)
         for type in Tab1.graph_types:
-            gr_entries[type] = create_entry(self, row, col+1, 10)
+            gr_entries[type] = m.create_entry(self, row, col+1, 10)
             col += 2
 
         row = 5
@@ -586,11 +517,11 @@ class Tab1(tkinter.Frame):
         # Frequency
         f_entries = {}
         f_units = {}
-        create_label(self, "\u03BD : Frequency", row, col)
+        m.create_label(self, "\u03BD : Frequency", row, col)
         for type in Tab1.graph_types:
-            f_entries[type] = create_entry(self, row, col+1, 10)
+            f_entries[type] = m.create_entry(self, row, col+1, 10)
             f_units[type] = tkinter.StringVar(value="GHz")
-            create_combobox(self, f_units[type], f.units_GHz, row, col+2)
+            m.create_combobox(self, f_units[type], f.units_GHz, row, col+2)
             col += 2
 
         row = 6 
@@ -598,51 +529,51 @@ class Tab1(tkinter.Frame):
         # RCS
         rcs_entries = {}
         rcs_units = {}
-        create_label(self, "\u03C3 : Radar Cross Section", row, col)
-        rcs_entries["pr"] = create_entry(self, row, col+1, 10)
+        m.create_label(self, "\u03C3 : Radar Cross Section", row, col)
+        rcs_entries["pr"] = m.create_entry(self, row, col+1, 10)
         rcs_units["pr"] = tkinter.StringVar(value="m\u00B2")
-        create_combobox(self, rcs_units["pr"], f.units_rcs, row, col+2)
+        m.create_combobox(self, rcs_units["pr"], f.units_rcs, row, col+2)
 
         row = 7
         col = 0
         # Range
         r_entries = {}
         r_units = {}
-        create_label(self, "R : Range", row, col)
+        m.create_label(self, "R : Range", row, col)
         for type in Tab1.graph_types:
-            r_entries[type] = create_entry(self, row, col+1, 10)
+            r_entries[type] = m.create_entry(self, row, col+1, 10)
             r_units[type] = tkinter.StringVar(value="NMI")
-            create_combobox(self, r_units[type], f.units_NMI, row, col+2)
+            m.create_combobox(self, r_units[type], f.units_NMI, row, col+2)
             col += 2
 
         row = 8
         col = 2
         # Transmit Path Loss
         lt_entries = {}
-        create_label(self, "Lt : Transmit Path Loss", row, 0)
+        m.create_label(self, "Lt : Transmit Path Loss", row, 0)
         for type in Tab1.graph_types:
             if type == "pr": continue
-            lt_entries[type] = create_entry(self, row, col+1, 10)
+            lt_entries[type] = m.create_entry(self, row, col+1, 10)
             col += 2
 
         row = 9
         col = 2
         # Propogation Medium Loss
         la_entries = {}
-        create_label(self, "La : Propogation Medium Loss", row, 0)
+        m.create_label(self, "La : Propogation Medium Loss", row, 0)
         for type in Tab1.graph_types:
             if type == "pr": continue
-            la_entries[type] = create_entry(self, row, col+1, 10)
+            la_entries[type] = m.create_entry(self, row, col+1, 10)
             col += 2
 
         row = 10
         col = 2
         # Receiver Component Loss
         lr_entries = {}
-        create_label(self, "Lr : Receiver Component Loss", row, 0)
+        m.create_label(self, "Lr : Receiver Component Loss", row, 0)
         for type in Tab1.graph_types:
             if type == "pr": continue
-            lr_entries[type] = create_entry(self, row, col+1, 10)
+            lr_entries[type] = m.create_entry(self, row, col+1, 10)
             col += 2
 
         row = 12
@@ -650,11 +581,11 @@ class Tab1(tkinter.Frame):
         # Power Received
         pr_entries = {}
         pr_units = {}
-        create_label(self, "Pr : Power Received", row, col, 10, 10)
+        m.create_label(self, "Pr : Power Received", row, col, 10, 10)
         for type in Tab1.graph_types:
-            pr_entries[type] = create_entry(self, row, col+1, 10)
+            pr_entries[type] = m.create_entry(self, row, col+1, 10)
             pr_units[type] = tkinter.StringVar(value="dBW")
-            create_combobox(self, pr_units[type], f.units_dBW, row, col+2)
+            m.create_combobox(self, pr_units[type], f.units_dBW, row, col+2)
             col += 2
 
         row = 14
@@ -667,22 +598,22 @@ class Tab1(tkinter.Frame):
         col = 0
         ## x Unit
         plot_x_unit = tkinter.StringVar(value="NMI")
-        create_label(frame, "x Unit", row, col)
-        create_combobox(frame, plot_x_unit, f.units_NMI, row, col+1)
+        m.create_label(frame, "x Unit", row, col)
+        m.create_combobox(frame, plot_x_unit, f.units_NMI, row, col+1)
 
         ## y Unit
         plot_y_unit = tkinter.StringVar(value="dBW")
-        create_label(frame, "y Unit", row+1, col)
-        create_combobox(frame, plot_y_unit, f.units_dBW, row+1, col+1)
+        m.create_label(frame, "y Unit", row+1, col)
+        m.create_combobox(frame, plot_y_unit, f.units_dBW, row+1, col+1)
 
         ## Plot Button
-        btn_plot = tkinter.Button(frame, text="Plot", command=calculate_and_plot, font=Tab1.default_font)
+        btn_plot = tkinter.Button(frame, text="Plot", command=calculate_and_plot, font=m.default_font)
         btn_plot.grid(row=row+2, column=col, columnspan=2, sticky="s")
 
         # Separators
-        create_separator(self, "horizontal", 1, 0)
-        create_separator(self, "horizontal", 11, 0)
-        create_separator(self, "horizontal", 13, 0)
+        m.create_separator(self, "horizontal", 1, 0)
+        m.create_separator(self, "horizontal", 11, 0)
+        m.create_separator(self, "horizontal", 13, 0)
 
         row = 14
         col = 1
