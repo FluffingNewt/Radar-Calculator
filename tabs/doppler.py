@@ -1,4 +1,4 @@
-import formulas as f
+import lib.formulas as f
 import numpy
 import tkinter
 from tkinter import ttk
