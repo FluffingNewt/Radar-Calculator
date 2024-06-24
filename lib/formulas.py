@@ -4,7 +4,7 @@ units_NMI  = ["NMI", "mi", "m", "ft"]
 units_dBW  = ["dBW", "dBm", "W", "mW"]
 units_GHz  = ["GHz", "MHz", "Hz", "kHz"]
 units_rcs  = ["m\u00B2", "ft\u00B2"]
-units_vel  = ["m/s", "km/h", "mi/h"]
+units_vel  = ["m/s", "km/h", "mi/h", "knots"]
 
 
 c = 299792458.0
@@ -119,23 +119,34 @@ def convert_to_ft2(value, unit):
 
 def convert_to_ms(value, unit):
     value = float(value)
-    if   unit == "km/h" : return value / 3.6
-    elif unit == "mi/h" : return value * 0.44704
-    else                : return value  # Passthrough
+    if   unit == "km/h"  : return value / 3.6
+    elif unit == "mi/h"  : return value * 0.44704
+    elif unit == "knots" : return value / 1.944
+    else                 : return value  # Passthrough
 
 
 def convert_to_kmh(value, unit):
     value = float(value)
-    if   unit == "m/s"  : return value * 3.6
-    elif unit == "mi/h" : return value * 1.60934
-    else                : return value  # Passthrough
+    if   unit == "m/s"   : return value * 3.6
+    elif unit == "mi/h"  : return value * 1.60934
+    elif unit == "knots" : return value * 1.852
+    else                 : return value  # Passthrough
 
 
 def convert_to_mih(value, unit):
     value = float(value)
-    if   unit == "m/s"  : return value * 2.23694
-    elif unit == "km/h" : return value / 1.60934
-    else                : return value  # Passthrough
+    if   unit == "m/s"   : return value * 2.23694
+    elif unit == "km/h"  : return value / 1.60934
+    elif unit == "knots" : return value * 1.151
+    else                 : return value  # Passthrough
+
+
+def convert_to_knots(value, unit):
+    value = float(value)
+    if   unit == "m/s"   : return value * 1.944
+    elif unit == "km/h"  : return value / 1.852
+    elif unit == "mi/h"  : return value / 1.151
+    else                 : return value  # Passthrough
 
 #!###### Linear RRE Formulas ######!#
 
@@ -314,11 +325,14 @@ def rre_log_r(pr, pt, gt, gr, f, rcs):
 
 #! Doppler Formulas
 
-def doppler_v(fd, f):
-    return (fd * c) / (2 * f)
+def doppler_vs(fd, ft, vt):
+    return (fd * c) / (2 * ft) - vt
 
-def doppler_f(fd, v):
-    return (fd * c) / (2 * v)
+def doppler_vt(fd, ft, vs):
+    return (fd * c) / (2 * ft) - vs
 
-def doppler_fd(v, f):
-    return (2 * v * f) / c
+def doppler_ft(fd, vs, vt):
+    return (fd * c) / (2 * (vs + vt))
+
+def doppler_fd(vs, vt, ft):
+    return (2 * (vs + vt) * ft) / c

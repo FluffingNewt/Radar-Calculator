@@ -322,9 +322,9 @@ class Tab2(tkinter.Frame):
         btn_plot.grid(row=row+2, column=col, columnspan=2, sticky="s")
 
         # Separators
-        m.create_separator(self, "horizontal", 1, 0)
-        m.create_separator(self, "horizontal", 8, 0)
-        m.create_separator(self, "horizontal", 10, 0)
+        m.create_separator(self, "horizontal", 1, 0, columnspan=3)
+        m.create_separator(self, "horizontal", 8, 0, columnspan=3)
+        m.create_separator(self, "horizontal", 10, 0, columnspan=3)
 
         row = 11
         col = 1
