@@ -1,4 +1,4 @@
-import formulas as f
+import lib.formulas as f
 import numpy
 import tkinter
 from tkinter import ttk
@@ -66,8 +66,8 @@ def create_combobox(self, textvariable, values, row, column, width=6, pady=10, s
     combobox.grid(row=row, column=column, pady=pady, sticky=sticky)
     return combobox
 
-def create_separator(self, orient, row, column, padx=0, pady=0):
+def create_separator(self, orient, row, column, padx=0, pady=0, rowspan=1, columnspan=1):
     separator = ttk.Separator(self, orient=orient)
-    if orient == "horizontal" : separator.grid(row=row, column=column, rowspan=1 ,columnspan=10 , sticky="ew", padx=padx, pady=pady)
-    else                      : separator.grid(row=row, column=column, rowspan=14 ,columnspan=1 , sticky="nsw", padx=padx, pady=pady)
+    if orient == "horizontal" : separator.grid(row=row, column=column, rowspan=rowspan ,columnspan=columnspan , sticky="ew", padx=padx, pady=pady)
+    else                      : separator.grid(row=row, column=column, rowspan=rowspan ,columnspan=columnspan , sticky="nsw", padx=padx, pady=pady)
     

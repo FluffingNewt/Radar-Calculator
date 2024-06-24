@@ -4,7 +4,7 @@ units_NMI  = ["NMI", "mi", "m", "ft"]
 units_dBW  = ["dBW", "dBm", "W", "mW"]
 units_GHz  = ["GHz", "MHz", "Hz", "kHz"]
 units_rcs  = ["m\u00B2", "ft\u00B2"]
-units_vel  = ["m/s"]
+units_vel  = ["m/s", "km/h", "mi/h", "knots"]
 
 
 c = 299792458.0
@@ -115,6 +115,38 @@ def convert_to_ft2(value, unit):
     value = float(value)
     if   unit == "m\u00B2" : return value * 10.7639
     else                   : return value # Passthrough
+
+
+def convert_to_ms(value, unit):
+    value = float(value)
+    if   unit == "km/h"  : return value / 3.6
+    elif unit == "mi/h"  : return value * 0.44704
+    elif unit == "knots" : return value / 1.944
+    else                 : return value  # Passthrough
+
+
+def convert_to_kmh(value, unit):
+    value = float(value)
+    if   unit == "m/s"   : return value * 3.6
+    elif unit == "mi/h"  : return value * 1.60934
+    elif unit == "knots" : return value * 1.852
+    else                 : return value  # Passthrough
+
+
+def convert_to_mih(value, unit):
+    value = float(value)
+    if   unit == "m/s"   : return value * 2.23694
+    elif unit == "km/h"  : return value / 1.60934
+    elif unit == "knots" : return value * 1.151
+    else                 : return value  # Passthrough
+
+
+def convert_to_knots(value, unit):
+    value = float(value)
+    if   unit == "m/s"   : return value * 1.944
+    elif unit == "km/h"  : return value / 1.852
+    elif unit == "mi/h"  : return value / 1.151
+    else                 : return value  # Passthrough
 
 #!###### Linear RRE Formulas ######!#
 
@@ -255,43 +287,52 @@ def rre_log_r(pr, pt, gt, gr, f, rcs):
 
 #!###### Logarithmic RRE Jammer Formulas ######!#
 
-def rre_log_j_pr(pt, gt, gr, f, r, lt, la, lr):
-    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
-    return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(lt) - 10 * math.log10(la) - 10 * math.log10(lr)
+# def rre_log_j_pr(pt, gt, gr, f, r, lt, la, lr):
+#     wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+#     return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(lt) - 10 * math.log10(la) - 10 * math.log10(lr)
 
-def rre_log_j_pt(pr, gt, gr, f, r, lt, la, lr):
-    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
-    return 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) - 10 * math.log10(gt) - 10 * math.log10(gr) - 2 * wavelength + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr)
+# def rre_log_j_pt(pr, gt, gr, f, r, lt, la, lr):
+#     wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+#     return 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) - 10 * math.log10(gt) - 10 * math.log10(gr) - 2 * wavelength + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr)
 
-def rre_log_j_gt(pr, pt, gr, f, r, lt, la, lr):
-    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
-    return 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) - 10 * math.log10(pt) - 10 * math.log10(gr) - 2 * wavelength + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr)
+# def rre_log_j_gt(pr, pt, gr, f, r, lt, la, lr):
+#     wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+#     return 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) - 10 * math.log10(pt) - 10 * math.log10(gr) - 2 * wavelength + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr)
 
-def rre_log_j_gr(pr, pt, gt, f, r, lt, la, lr):
-    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
-    return 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) - 10 * math.log10(pt) - 10 * math.log10(gt) - 2 * wavelength + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr)
+# def rre_log_j_gr(pr, pt, gt, f, r, lt, la, lr):
+#     wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+#     return 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) - 10 * math.log10(pt) - 10 * math.log10(gt) - 2 * wavelength + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr)
 
-def rre_log_j_f(pr, pt, gt, gr, r, lt, la, lr):
-    wavelength = 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr) - 10 * math.log10(pt) - 10 * math.log10(gt) + 10 * math.log10(gr)
-    return 10 * math.log10(c) - 0.5 * wavelength
+# def rre_log_j_f(pr, pt, gt, gr, r, lt, la, lr):
+#     wavelength = 10 * math.log10(pr) + 20 * math.log10(4 * math.pi) + 20 * math.log10(r) + 10 * math.log10(lt) + 10 * math.log10(la) + 10 * math.log10(lr) - 10 * math.log10(pt) - 10 * math.log10(gt) + 10 * math.log10(gr)
+#     return 10 * math.log10(c) - 0.5 * wavelength
 
-def rre_log_j_r(pr, pt, gt, gr, f, lt, la, lr):
-    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
-    return 0.5 * (10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 10 * math.log10(lt) - 10 * math.log10(la) - 10 * math.log10(lr))
+# def rre_log_j_r(pr, pt, gt, gr, f, lt, la, lr):
+#     wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+#     return 0.5 * (10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 10 * math.log10(lt) - 10 * math.log10(la) - 10 * math.log10(lr))
 
-def rre_log_j_lt(pr, pt, gt, gr, f, r, la, lr):
-    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
-    return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(la) - 10 * math.log10(lr)
+# def rre_log_j_lt(pr, pt, gt, gr, f, r, la, lr):
+#     wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+#     return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(la) - 10 * math.log10(lr)
 
-def rre_log_j_la(pr, pt, gt, gr, f, r, lt, lr):
-    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
-    return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(lt) - 10 * math.log10(lr)
+# def rre_log_j_la(pr, pt, gt, gr, f, r, lt, lr):
+#     wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+#     return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(lt) - 10 * math.log10(lr)
 
-def rre_log_j_lr(pr, pt, gt, gr, f, r, lt, la):
-    wavelength = 10 * math.log10(c) - 10 * math.log10(f)
-    return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(lt) - 10 * math.log10(la)
+# def rre_log_j_lr(pr, pt, gt, gr, f, r, lt, la):
+#     wavelength = 10 * math.log10(c) - 10 * math.log10(f)
+#     return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(lt) - 10 * math.log10(la)
 
-#! Doppler Equation
+#! Doppler Formulas
 
-def doppler():
-    return
+def doppler_vs(fd, ft, vt):
+    return (fd * c) / (2 * ft) - vt
+
+def doppler_vt(fd, ft, vs):
+    return (fd * c) / (2 * ft) - vs
+
+def doppler_ft(fd, vs, vt):
+    return (fd * c) / (2 * (vs + vt))
+
+def doppler_fd(vs, vt, ft):
+    return (2 * (vs + vt) * ft) / c

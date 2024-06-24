@@ -1,8 +1,7 @@
-import formulas as f
-import methods as m
+import lib.formulas as f
+import lib.methods as m
 import numpy
 import tkinter
-from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
@@ -491,7 +490,7 @@ class Tab1(tkinter.Frame):
             pt_entries[type] = m.create_entry(self, row, col+1, 10)
             pt_units[type] = tkinter.StringVar(value="dBW")
             m.create_combobox(self, pt_units[type], f.units_dBW, row, col+2)
-            m.create_separator(self, "vertical", 0, col+1, 5)
+            m.create_separator(self, "vertical", 0, col+1, 5, rowspan=14)
             col += 2
 
         row = 3
@@ -611,9 +610,9 @@ class Tab1(tkinter.Frame):
         btn_plot.grid(row=row+2, column=col, columnspan=2, sticky="s")
 
         # Separators
-        m.create_separator(self, "horizontal", 1, 0)
-        m.create_separator(self, "horizontal", 11, 0)
-        m.create_separator(self, "horizontal", 13, 0)
+        m.create_separator(self, "horizontal", 1, 0, columnspan=10)
+        m.create_separator(self, "horizontal", 11, 0, columnspan=10)
+        m.create_separator(self, "horizontal", 13, 0, columnspan=10)
 
         row = 14
         col = 1
