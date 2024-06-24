@@ -1,7 +1,6 @@
 import lib.formulas as f
-import numpy
+import lib.methods  as m
 import tkinter
-from tkinter import ttk
 
 
 class Tab3(tkinter.Frame):
@@ -13,67 +12,78 @@ class Tab3(tkinter.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        def calc_doppler(v, ft, fd):
-            return
+        def calc_doppler():
 
-        
+            # if not m.validate_entries(self, 1, 3): return
 
-        def reset_entry(event, entry):
-            if entry.get() == "invalid input":
-                entry.delete(0, tkinter.END)
-                entry.config(fg="black")
+            if   v_entry.get() == "":
+                ft = f.convert_to_Hz(ft_entry.get(), ft_unit.get())
+                fd = f.convert_to_Hz(fd_entry.get(), fd_unit.get())
+                v = f.doppler_v(ft, fd)
 
-        def create_label(self, text, row, column, padx=10, pady=5, sticky="w", columnspan=1):
-            label = tkinter.Label(self, text=text, font=Tab3.bold_font)
-            label.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady, sticky=sticky)
-            return label
+                if   v_unit.get() == "km/h" : v = f.convert_to_kmh(v, "m/s")
+                elif v_unit.get() == "mi/h" : v = f.convert_to_mih(v, "m/s")
 
-        def create_entry(self, row, column, padx=0 , pady=10):
-            entry = tkinter.Entry(self)
-            entry.grid(row=row, column=column, padx=padx, pady=pady, sticky="w")
-            entry.bind("<FocusIn>", lambda event: reset_entry(event, entry))
-            return entry
+                v_entry.insert(0, f"{v}")
 
-        def create_combobox(self, textvariable, values, row, column, width=6, pady=10, sticky=""):
-            combobox = ttk.Combobox(self, textvariable=textvariable, values=values, font=Tab3.default_font, state="readonly", width=width)
-            combobox.grid(row=row, column=column, pady=pady, sticky=sticky)
-            return combobox
+            elif ft_entry.get() == "":
+                v  = f.convert_to_ms(v_entry.get(), v_unit.get())
+                fd = f.convert_to_Hz(fd_entry.get(), fd_unit.get())
+                ft = f.doppler_f(v, fd)
 
-        def create_separator(self, orient, row, column, padx=0, pady=0):
-            separator = ttk.Separator(self, orient=orient)
-            if orient == "horizontal" : separator.grid(row=row, column=column, rowspan=1 ,columnspan=10 , sticky="ew", padx=padx, pady=pady)
-            else                      : separator.grid(row=row, column=column, rowspan=14 ,columnspan=1 , sticky="nsw", padx=padx, pady=pady)
-            
+                if   ft_unit.get() == "GHz" : ft = f.convert_to_GHz(ft, "Hz")
+                elif ft_unit.get() == "MHz" : ft = f.convert_to_MHz(ft, "Hz")
+                elif ft_unit.get() == "kHz" : ft = f.convert_to_kHz(ft, "Hz")
+                elif ft_unit.get() == "Hz"  : ft = f.convert_to_Hz(ft, "Hz")
+
+                ft_entry.insert(0, f"{ft}")
+
+            else:
+                v  = f.convert_to_ms(v_entry.get(), v_unit.get())
+                ft = f.convert_to_Hz(ft_entry.get(), ft_unit.get())
+                fd = f.doppler_fd(v, ft)
+
+                if   fd_unit.get() == "GHz" : fd = f.convert_to_GHz(fd, "Hz")
+                elif fd_unit.get() == "MHz" : fd = f.convert_to_MHz(fd, "Hz")
+                elif fd_unit.get() == "kHz" : fd = f.convert_to_kHz(fd, "Hz")
+                elif fd_unit.get() == "Hz"  : fd = f.convert_to_Hz(fd, "Hz")
+
+                fd_entry.insert(0, f"{fd}")
         
         row = 0
         col = 0
-        create_label(self, "Doppler Theorem", row, col)
+        m.create_label(self, "Doppler Theorem", row, col)
 
         row = 1
         col = 0
-        create_separator(self, "horizontal", row, col, 0)
+        m.create_separator(self, "horizontal", row, col, 0)
 
         row = 2
         col = 0
-        create_label(self, "V : Shooter-Target Closing Velocity", row, col)
-        v_entry = create_entry(self, row, col+1, 10)
+        m.create_label(self, "V : Shooter-Target Closing Velocity", row, col)
+        v_entry = m.create_entry(self, row, col+1, 10)
         v_unit = tkinter.StringVar(value="m/s")
-        create_combobox(self, v_unit, f.units_vel, row, col+2)
+        m.create_combobox(self, v_unit, f.units_vel, row, col+2)
 
         row = 3
         col = 0
-        create_label(self, "ft : Transmit Frequency", row, col)
-        ft_entry = create_entry(self, row, col+1, 10)
+        m.create_label(self, "ft : Transmit Frequency", row, col)
+        ft_entry = m.create_entry(self, row, col+1, 10)
         ft_unit = tkinter.StringVar(value="GHz")
-        create_combobox(self, ft_unit, f.units_GHz, row, col+2)
+        m.create_combobox(self, ft_unit, f.units_GHz, row, col+2)
 
         row = 4
         col = 0
-        create_separator(self, "horizontal", row, col, 0)
+        m.create_separator(self, "horizontal", row, col, 0)
 
         row = 5
         col = 0
-        create_label(self, "fd : Doppler Frequency", row, col)
-        fd_entry = create_entry(self, row, col+1, 10)
+        m.create_label(self, "fd : Doppler Frequency", row, col)
+        fd_entry = m.create_entry(self, row, col+1, 10)
         fd_unit = tkinter.StringVar(value="GHz")
-        create_combobox(self, ft_unit, f.units_GHz, row, col+2)
+        m.create_combobox(self, fd_unit, f.units_GHz, row, col+2)
+
+        row = 6
+        col = 0
+        btn_plot = tkinter.Button(self, text="Calculate", command=calc_doppler, font=m.default_font)
+        btn_plot.grid(row=row+2, column=col, columnspan=2, sticky="s")

@@ -4,7 +4,7 @@ units_NMI  = ["NMI", "mi", "m", "ft"]
 units_dBW  = ["dBW", "dBm", "W", "mW"]
 units_GHz  = ["GHz", "MHz", "Hz", "kHz"]
 units_rcs  = ["m\u00B2", "ft\u00B2"]
-units_vel  = ["m/s"]
+units_vel  = ["m/s", "km/h", "mi/h"]
 
 
 c = 299792458.0
@@ -115,6 +115,27 @@ def convert_to_ft2(value, unit):
     value = float(value)
     if   unit == "m\u00B2" : return value * 10.7639
     else                   : return value # Passthrough
+
+
+def convert_to_ms(value, unit):
+    value = float(value)
+    if   unit == "km/h" : return value / 3.6
+    elif unit == "mi/h" : return value * 0.621371 / 3.6
+    else                : return value  # Passthrough
+
+
+def convert_to_kmh(value, unit):
+    value = float(value)
+    if   unit == "m/s"  : return value * 3.6
+    elif unit == "mi/h" : return value * 0.621371 * 3.6
+    else                : return value  # Passthrough
+
+
+def convert_to_mih(value, unit):
+    value = float(value)
+    if   unit == "m/s"  : return value * 2.23694
+    elif unit == "km/h" : return value / 1.60934 * 2.23694
+    else                : return value  # Passthrough
 
 #!###### Linear RRE Formulas ######!#
 

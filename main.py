@@ -1,8 +1,8 @@
 import tkinter
-from tkinter import ttk
+from tkinter         import ttk
 from tabs.linear_tab import Tab1
-from tabs.log_tab import Tab2
-from tabs.doppler import Tab3
+from tabs.log_tab    import Tab2
+from tabs.doppler    import Tab3
 
 root = tkinter.Tk()
 root.geometry("915x1010")
