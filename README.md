@@ -85,7 +85,7 @@ $c$ : Speed of Light ( $299,792,458 \space m/s$ )
 ## Doppler Shift
 
 $\displaystyle \boldsymbol{
-f_D = \frac{2 \ V f_t}{c}}
+f_d = \frac{2 \ V f_t}{c}}
 $
 
 <br>
@@ -93,7 +93,7 @@ $
 <p style="margin-bottom: 5px;"><b>Units:</b></p>
 
 $V$ : Velocity ( $m/s$ )  
-$f_D$ : Doppler Frequency ( $Hz$ )  
+$f_d$ : Doppler Frequency ( $Hz$ )  
 $f_t$ : Transmit Frequency ( $Hz$ )  
 $c$ : Speed of Light ( $299,792,458 \space m/s$ )
 
