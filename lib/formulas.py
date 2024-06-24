@@ -120,21 +120,21 @@ def convert_to_ft2(value, unit):
 def convert_to_ms(value, unit):
     value = float(value)
     if   unit == "km/h" : return value / 3.6
-    elif unit == "mi/h" : return value * 0.621371 / 3.6
+    elif unit == "mi/h" : return value * 0.44704
     else                : return value  # Passthrough
 
 
 def convert_to_kmh(value, unit):
     value = float(value)
     if   unit == "m/s"  : return value * 3.6
-    elif unit == "mi/h" : return value * 0.621371 * 3.6
+    elif unit == "mi/h" : return value * 1.60934
     else                : return value  # Passthrough
 
 
 def convert_to_mih(value, unit):
     value = float(value)
     if   unit == "m/s"  : return value * 2.23694
-    elif unit == "km/h" : return value / 1.60934 * 2.23694
+    elif unit == "km/h" : return value / 1.60934
     else                : return value  # Passthrough
 
 #!###### Linear RRE Formulas ######!#

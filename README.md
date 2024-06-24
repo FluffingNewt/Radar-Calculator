@@ -82,6 +82,21 @@ $c$ : Speed of Light ( $299,792,458 \space m/s$ )
 
 <br>
 
+## Doppler Shift
+
+$\displaystyle \boldsymbol{
+f_D = \frac{2 \ V f_t}{c}}
+$
+
+<br>
+
+<p style="margin-bottom: 5px;"><b>Units:</b></p>
+
+$V$ : Velocity ( $m/s$ )  
+$f_D$ : Doppler Frequency ( $Hz$ )  
+$f_t$ : Transmit Frequency ( $Hz$ )  
+$c$ : Speed of Light ( $299,792,458 \space m/s$ )
+
 ## Known Bugs/Issues
 - If "-" is found within an input, no logged error will be raised, as negative numbers are enabled.
 - If "e" is found within an input (not including "E"), no logged error will be raised, as some calculations result in a scientific notation output.
