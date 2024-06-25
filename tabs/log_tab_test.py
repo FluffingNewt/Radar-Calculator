@@ -1,4 +1,4 @@
-import lib.formulas as f
+import lib.formulas as formulas
 import lib.methods as m
 import numpy
 import tkinter
@@ -24,150 +24,110 @@ class Tab4(tkinter.Frame):
 
         class Graph:
 
-            def __init__(self, invalid, pwr_r, pwr_r_u, pwr_t, pwr_t_u, gain_t, gain_r, freq, freq_u, rcs, rcs_u, r, r_u):
+            def __init__(self, invalid, pr, pr_u, pt, pt_u, gt, gr, f, f_u, rcs, rcs_u, r, r_u):
                 if invalid: return
 
-                if pwr_t.get() == "":
-                    self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
-                    self.gain_t = float(gain_t.get())
-                    self.gain_r = float(gain_r.get())
-                    self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
-                    self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
-                    self.r      = f.convert_to_m(r.get(), r_u.get())
-                    
-                    log_pwr_t = f.rre_log_pt(self.pwr_r, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
-                    self.pwr_t = 10 ** (log_pwr_t / 10)
+                self.pr  , self.pr_unit  = formulas.convert_to_dBW(pr.get() , pr_u.get())  , pr_u.get()
+                self.pt  , self.pt_unit  = formulas.convert_to_dBW(pt.get() , pt_u.get())  , pt_u.get()
+                self.f   , self.f_unit   = formulas.convert_to_Hz(f.get()   , f_u.get())   , f_u.get()
+                self.rcs , self.rcs_unit = formulas.convert_to_m2(rcs.get() , rcs_u.get()) , rcs_u.get()
+                self.r   , self.r_unit   = formulas.convert_to_m(r.get()    , r_u.get())   , r_u.get()
+                self.gt                  = float(gt.get()) if gt.get() != "" else ""
+                self.gr                  = float(gr.get()) if gr.get() != "" else ""
 
-                    if   pwr_t_u.get() == "dBW" : pwr_t = f.convert_to_dBW(self.pwr_t, "W")
-                    elif pwr_t_u.get() == "dBm" : pwr_t = f.convert_to_dBm(self.pwr_t, "W")
-                    elif pwr_t_u.get() == "W"   : pwr_t = f.convert_to_W(self.pwr_t, "W")
-
-                    pt_entries["pr"].insert(0, f"{self.pwr_t}")
-
-                    print(f"\nGraph type - Pr:  Pt = {self.pwr_t} {pwr_t_u.get()}")
-
-                elif gain_t.get() == "":
-                    self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
-                    self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
-                    self.gain_r = float(gain_r.get())
-                    self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
-                    self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
-                    self.r      = f.convert_to_m(r.get(), r_u.get())
-
-                    log_gain_t = f.rre_log_gt(self.pwr_r, self.pwr_t, self.gain_r, self.freq, self.rcs, self.r)
-                    self.gain_t = 10 ** (log_gain_t / 10)
-
-                    gt_entries["pr"].insert(0, f"{self.gain_t}")
-
-                    print(f"\nGraph type - Pr:  Gt = {self.gain_t}")
-
-                elif gain_r.get() == "":
-                    self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
-                    self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
-                    self.gain_t = float(gain_t.get())
-                    self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
-                    self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
-                    self.r      = f.convert_to_m(r.get(), r_u.get())
-
-                    log_gain_r = f.rre_log_gr(self.pwr_r, self.pwr_t, self.gain_t, self.freq, self.rcs, self.r)
-                    self.gain_r = 10 ** (log_gain_r / 10)
-
-                    gr_entries["pr"].insert(0, f"{self.gain_r}")
-                    
-                    print(f"\nGraph type - Pr:  Gr = {self.gain_r}")
-                
-                elif freq.get() == "":
-                    self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
-                    self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
-                    self.gain_t = float(gain_t.get())
-                    self.gain_r = float(gain_r.get())
-                    self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
-                    self.r      = f.convert_to_m(r.get(), r_u.get())
-
-                    log_freq = f.rre_log_f(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.rcs, self.r)
-                    self.freq = 10 ** (log_freq / 10)
-
-                    if   freq_u.get() == "GHz" : freq = f.convert_to_GHz(self.freq, "Hz")
-                    elif freq_u.get() == "MHz" : freq = f.convert_to_MHz(self.freq, "Hz")
-                    elif freq_u.get() == "kHz" : freq = f.convert_to_kHz(self.freq, "Hz")
-                    elif freq_u.get() == "Hz"  : freq = f.convert_to_Hz(self.freq, "Hz")
-
-                    f_entries["pr"].insert(0, f"{freq}")
-
-                    print(f"\nGraph type - Pr:  freq = {freq} {freq_u.get()}")
-                
-                elif rcs.get() == "":
-                    self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
-                    self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
-                    self.gain_t = float(gain_t.get())
-                    self.gain_r = float(gain_r.get())
-                    self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
-                    self.r      = f.convert_to_m(r.get(), r_u.get())
-
-                    log_rcs = f.rre_log_rcs(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.r)
-                    self.rcs = 10 ** (log_rcs / 10)
-
-                    if   rcs_u.get() == "m\u00B2"  : rcs = f.convert_to_m2(self.rcs, "m\u00B2")
-                    elif rcs_u.get() == "ft\u00B2" : rcs = f.convert_to_ft2(self.rcs, "m\u00B2")
-
-                    rcs_entries["pr"].insert(0, f"{rcs}")
-
-                    print(f"\nGraph type - Pr:  rcs = {rcs} {rcs_u.get()}")
-                
-                elif r.get() == "":
-                    self.pwr_r  = f.convert_to_W(pwr_r.get(), pwr_r_u.get())
-                    self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
-                    self.gain_t = float(gain_t.get())
-                    self.gain_r = float(gain_r.get())
-                    self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
-                    self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
-
-                    log_r = f.rre_log_r(self.pwr_r, self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs)
-                    self.r = 10 ** (log_r / 10)
-
-                    if   r_u.get() == "NMI" : r = f.convert_to_NMI(self.r, "m")
-                    elif r_u.get() == "mi"  : r = f.convert_to_mi(self.r, "m")
-                    elif r_u.get() == "m"   : r = f.convert_to_m(self.r, "m")
-                    elif r_u.get() == "ft"  : r = f.convert_to_ft(self.r, "m")
-
-                    r_entries["pr"].insert(0, f"{r}")
-
-                    print(f"\nGraph type - Pr:  R = {r} {r_u.get()}")
-                
-                else: # if pwr_r == "" or calculate like normal
-                    if pwr_r.get() != "": pr_entries["pr"].delete(0, tkinter.END)
-
-                    self.pwr_t  = f.convert_to_W(pwr_t.get(), pwr_t_u.get())
-                    self.gain_t = float(gain_t.get())
-                    self.gain_r = float(gain_r.get())
-                    self.freq   = f.convert_to_Hz(freq.get(), freq_u.get())
-                    self.rcs    = f.convert_to_m2(rcs.get(), rcs_u.get())
-                    self.r      = f.convert_to_m(r.get(), r_u.get())
-
-                    log_pwr_r = f.rre_log_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs, self.r)
-                    self.pwr_r = 10 ** (log_pwr_r / 10)
-
-                    if   pwr_r_u.get() == "dBW" : pwr_r = f.convert_to_dBW(self.pwr_r, "W")
-                    elif pwr_r_u.get() == "dBm" : pwr_r = f.convert_to_dBm(self.pwr_r, "W")
-                    elif pwr_r_u.get() == "W"   : pwr_r = f.convert_to_W(self.pwr_r, "W")
-
-                    pr_entries["pr"].insert(0, f"{pwr_r}")
-
-                    print(f"\nGraph type - Pr:  Pr = {pwr_r} {pwr_r_u.get()}")
-                    print(f"               10log = {log_pwr_r} {pwr_r_u.get()}")
-
-                # generate x and y values
-                self.x_values = numpy.linspace(1, self.r, 100)
+                self.x_values = []
                 self.y_values = []
 
-                for range in self.x_values:
-                    pr = f.rre_log_pr(self.pwr_t, self.gain_t, self.gain_r, self.freq, self.rcs, range)
-                    self.y_values.append(pr)
-                
+                self.error_report = False
+            
+            def calc_missing(self):
+                if   self.pt  == "":
+                    log_pt = formulas.rre_log_pt(self.pr, self.gt, self.gr, self.f, self.rcs, self.r)
+                    self.pt = 10 ** (log_pt / 10)
 
-                self.convert_x_values(plot_x_unit.get())
-                self.convert_y_values(plot_y_unit.get())
+                    try:
+                        if self.pt_unit == "dBm" : pt = formulas.convert_to_dBm(self.pt, "dBW")
+                        elif self.pt_unit == "W" : pt = formulas.convert_to_W(self.pt, "dBW")
+                        else                     : pt = self.pt
 
+                        pt_entries["pr"].insert(0, f"{pt}")
+
+                    except:
+                        r_entries["pr"].insert(0, "error")
+                        r_entries["pr"].config(fg="red")
+
+                elif self.gt  == "":
+                    log_gt = formulas.rre_log_gt(self.pr, self.pt, self.gr, self.f, self.rcs, self.r)
+                    self.gt = 10 ** (log_gt / 10)
+                    gt_entries["pr"].insert(0, f"{self.gt}")
+
+                elif self.gr  == "":
+                    log_gr = formulas.rre_log_gt(self.pr, self.pt, self.gt, self.f, self.rcs, self.r)
+                    self.gr = 10 ** (log_gr / 10)
+                    gr_entries["pr"].insert(0, f"{self.gr}")
+
+                elif self.f   == "":
+                    log_f = formulas.rre_log_f(self.pr, self.pt, self.gt, self.gr, self.rcs, self.r)
+                    self.f = 10 ** (log_f / 10)
+
+                    try:
+                        if   self.f_unit == "GHz" : f = formulas.convert_to_GHz(self.f, "Hz")
+                        elif self.f_unit == "MHz" : f = formulas.convert_to_MHz(self.f, "Hz")
+                        elif self.f_unit == "kHz" : f = formulas.convert_to_kHz(self.f, "Hz")
+                        else                      : f = self.f
+
+                        f_entries["pr"].insert(0, f"{f}")
+
+                    except:
+                        r_entries["pr"].insert(0, "error")
+                        r_entries["pr"].config(fg="red")
+
+                elif self.rcs == "":
+                    log_rcs = formulas.rre_log_rcs(self.pr, self.pt, self.gt, self.gr, self.f, self.r)
+                    self.rcs = 10 ** (log_rcs / 10)
+                    
+                    try:
+                        if self.rcs_unit == "ft\u00B2" : rcs = formulas.convert_to_ft2(self.rcs, "m\u00B2")
+                        else                           : rcs = self.rcs
+
+                        rcs_entries["pr"].insert(0, f"{rcs}")
+
+                    except:
+                        r_entries["pr"].insert(0, "error")
+                        r_entries["pr"].config(fg="red")
+
+                elif self.r   == "":
+                    log_r = formulas.rre_log_r(self.pr, self.pt, self.gt, self.gr, self.f, self.rcs)
+                    self.r = 10 ** (log_r / 10)
+
+                    try:
+                        if   self.r_unit == "NMI" : r = formulas.convert_to_NMI(self.r, "m")
+                        elif self.r_unit == "mi"  : r = formulas.convert_to_mi(self.r, "m")
+                        elif self.r_unit == "ft"  : r = formulas.convert_to_ft(self.r, "m")
+                        else                      : r = self.r
+
+                        r_entries["pr"].insert(0, f"{r}")
+
+                    except:
+                        r_entries["pr"].insert(0, "error")
+                        r_entries["pr"].config(fg="red")
+
+                else:
+                    if self.pr != "": pr_entries["pr"].delete(0, tkinter.END)
+
+                    log_pr = formulas.rre_log_pr(self.pt, self.gt, self.gr, self.f, self.rcs, self.r)
+                    self.pr = 10 ** (log_pr / 10)
+
+                    try:
+                        if   self.pr_unit == "dBm" : pr = formulas.convert_to_dBm(self.pr, "dBW")
+                        elif self.pr_unit == "W"   : pr = formulas.convert_to_W(self.pr, "dBW")
+                        else                       : pr = self.pr
+
+                        pr_entries["pr"].insert(0, f"{pr}")
+
+                    except:
+                        pr_entries["pr"].insert(0, "error")
+                        pr_entries["pr"].config(fg="red")
                 
             def convert_x_values(self, unit):
                 if unit == "m": return
@@ -215,6 +175,8 @@ class Tab4(tkinter.Frame):
                             rcs_entries["pr"] , rcs_units ["pr"],
                             r_entries  ["pr"] , r_units   ["pr"])
             
+            graph_pr.calc_missing()
+            
 
             # Clear, initialize, and plot graph
             if not pr_error:
@@ -240,7 +202,7 @@ class Tab4(tkinter.Frame):
         m.create_label(self, "Pt : Power Transmitted", row, col)
         pt_entries["pr"] = m.create_entry(self, row, col+1, 10)
         pt_units["pr"] = tkinter.StringVar(value="dBW")
-        m.create_combobox(self, pt_units["pr"], f.units_dBW, row, col+2)
+        m.create_combobox(self, pt_units["pr"], formulas.units_dBW, row, col+2)
 
         row = 3
         col = 0
@@ -264,7 +226,7 @@ class Tab4(tkinter.Frame):
         m.create_label(self, "\u03BD : Frequency", row, col)
         f_entries["pr"] = m.create_entry(self, row, col+1, 10)
         f_units["pr"] = tkinter.StringVar(value="GHz")
-        m.create_combobox(self, f_units["pr"], f.units_GHz, row, col+2)
+        m.create_combobox(self, f_units["pr"], formulas.units_GHz, row, col+2)
 
         row = 6 
         col = 0
@@ -274,7 +236,7 @@ class Tab4(tkinter.Frame):
         m.create_label(self, "\u03C3 : Radar Cross Section", row, col)
         rcs_entries["pr"] = m.create_entry(self, row, col+1, 10)
         rcs_units["pr"] = tkinter.StringVar(value="m\u00B2")
-        m.create_combobox(self, rcs_units["pr"], f.units_rcs, row, col+2)
+        m.create_combobox(self, rcs_units["pr"], formulas.units_rcs, row, col+2)
 
         row = 7
         col = 0
@@ -284,7 +246,7 @@ class Tab4(tkinter.Frame):
         m.create_label(self, "R : Range", row, col)
         r_entries["pr"] = m.create_entry(self, row, col+1, 10)
         r_units["pr"] = tkinter.StringVar(value="NMI")
-        m.create_combobox(self, r_units["pr"], f.units_NMI, row, col+2)
+        m.create_combobox(self, r_units["pr"], formulas.units_NMI, row, col+2)
 
         row = 9
         col = 0
@@ -294,7 +256,7 @@ class Tab4(tkinter.Frame):
         m.create_label(self, "Pr : Power Received", row, col, 10, 10)
         pr_entries["pr"] = m.create_entry(self, row, col+1, 10)
         pr_units["pr"] = tkinter.StringVar(value="dBW")
-        m.create_combobox(self, pr_units["pr"], f.units_dBW, row, col+2)
+        m.create_combobox(self, pr_units["pr"], formulas.units_dBW, row, col+2)
 
         row = 11
         col = 0
@@ -307,12 +269,12 @@ class Tab4(tkinter.Frame):
         ## x Unit
         plot_x_unit = tkinter.StringVar(value="NMI")
         m.create_label(frame, "x Unit", row, col)
-        m.create_combobox(frame, plot_x_unit, f.units_NMI, row, col+1)
+        m.create_combobox(frame, plot_x_unit, formulas.units_NMI, row, col+1)
 
         ## y Unit
         plot_y_unit = tkinter.StringVar(value="dBW")
         m.create_label(frame, "y Unit", row+1, col)
-        m.create_combobox(frame, plot_y_unit, f.units_dBW, row+1, col+1)
+        m.create_combobox(frame, plot_y_unit, formulas.units_dBW, row+1, col+1)
 
         ## Plot Button
         btn_plot = tkinter.Button(frame, text="Plot", command=calculate_and_plot, font=m.default_font)
