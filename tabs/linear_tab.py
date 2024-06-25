@@ -38,7 +38,6 @@ class Tab1(tkinter.Frame):
                     if   pwr_t_u.get() == "dBW" : pwr_t = f.convert_to_dBW(self.pwr_t, "W")
                     elif pwr_t_u.get() == "dBm" : pwr_t = f.convert_to_dBm(self.pwr_t, "W")
                     elif pwr_t_u.get() == "W"   : pwr_t = f.convert_to_W(self.pwr_t, "W")
-                    elif pwr_t_u.get() == "mW"  : pwr_t = f.convert_to_mW(self.pwr_t, "W")
 
                     pt_entries["pr"].insert(0, f"{pwr_t}")
 
@@ -142,7 +141,6 @@ class Tab1(tkinter.Frame):
                     if   pwr_r_u.get() == "dBW" : pwr_r = f.convert_to_dBW(self.pwr_r, "W")
                     elif pwr_r_u.get() == "dBm" : pwr_r = f.convert_to_dBm(self.pwr_r, "W")
                     elif pwr_r_u.get() == "W"   : pwr_r = f.convert_to_W(self.pwr_r, "W")
-                    elif pwr_r_u.get() == "mW"  : pwr_r = f.convert_to_mW(self.pwr_r, "W")
 
                     pr_entries["pr"].insert(0, f"{pwr_r}")
 
@@ -216,7 +214,6 @@ class Tab1(tkinter.Frame):
                     if   pwr_t_u.get() == "dBW" : pwr_t = f.convert_to_dBW(self.pwr_t, "W")
                     elif pwr_t_u.get() == "dBm" : pwr_t = f.convert_to_dBm(self.pwr_t, "W")
                     elif pwr_t_u.get() == "W"   : pwr_t = f.convert_to_W(self.pwr_t, "W")
-                    elif pwr_t_u.get() == "mW"  : pwr_t = f.convert_to_mW(self.pwr_t, "W")
 
                     pt_entries[type].insert(0, f"{pwr_t}")
 
@@ -361,7 +358,6 @@ class Tab1(tkinter.Frame):
                     if   pwr_r_u.get() == "dBW" : pwr_r = f.convert_to_dBW(self.pwr_r, "W")
                     elif pwr_r_u.get() == "dBm" : pwr_r = f.convert_to_dBm(self.pwr_r, "W")
                     elif pwr_r_u.get() == "W"   : pwr_r = f.convert_to_W(self.pwr_r, "W")
-                    elif pwr_r_u.get() == "mW"  : pwr_r = f.convert_to_mW(self.pwr_r, "W")
 
                     pr_entries[type].insert(0, f"{pwr_r}")
 
@@ -407,7 +403,6 @@ class Tab1(tkinter.Frame):
 
                     if   unit == "dBW" : val = f.convert_to_dBW(val, "W")
                     elif unit == "dBm" : val = f.convert_to_dBm(val, "W")
-                    elif unit == "mW"  : val = f.convert_to_mW(val, "W")
 
                     new_y_values.append(val)
                 

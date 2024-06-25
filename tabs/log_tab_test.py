@@ -12,7 +12,7 @@ from matplotlib.figure import Figure
 #! To-Do
 #!
 
-class Tab2(tkinter.Frame):
+class Tab4(tkinter.Frame):
     
     graph_types  = ["pr", "nj", "rj"]
 

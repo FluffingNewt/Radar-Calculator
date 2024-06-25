@@ -1,7 +1,7 @@
 import math
 
 units_NMI  = ["NMI", "mi", "m", "ft"]
-units_dBW  = ["dBW", "dBm", "W", "mW"]
+units_dBW  = ["dBW", "dBm", "W"]
 units_GHz  = ["GHz", "MHz", "Hz", "kHz"]
 units_rcs  = ["m\u00B2", "ft\u00B2"]
 units_vel  = ["m/s", "km/h", "mi/h", "knots"]
@@ -11,6 +11,7 @@ c = 299792458.0
 
 #!###### Unit Conversions #####!#
 
+# Range
 def convert_to_NMI(value, unit):
     value = float(value)
     if   unit == "mi" : return value / 1.15078
@@ -42,12 +43,11 @@ def convert_to_ft(value, unit):
     elif unit == "m"   : return value / 0.3048
     else               : return value # Passthrough
 
-
+# Power
 def convert_to_dBW(value, unit):
     value = float(value)
     if   unit == "dBm" : return value - 30.0
     elif unit == "W"   : return 10 * math.log10(value)
-    elif unit == "mW"  : return 10 * math.log10(value / 1000.0)
     else               : return value # Passthrough
 
 
@@ -55,7 +55,6 @@ def convert_to_dBm(value, unit):
     value = float(value)
     if   unit == "dBW" : return value + 30.0
     elif unit == "W"   : return 10 * math.log10(value * 1000.0)
-    elif unit == "mW"  : return 10 * math.log10(value)
     else               : return value # Passthrough
 
 
@@ -63,16 +62,10 @@ def convert_to_W(value, unit):
     value = float(value)
     if   unit == "dBW" : return math.pow(10, value / 10.0)
     elif unit == "dBm" : return math.pow(10, value / 10.0) / 1000.0
-    elif unit == "mW"  : return value / 1000.0
     else               : return value  # Passthrough
 
 
-def convert_to_mW(value, unit):
-    value = float(value)
-    if unit != "mW" : return convert_to_W(value, unit) * 1000.0
-    else            : return value  # Passthrough
-
-
+# Frequency
 def convert_to_GHz(value, unit):
     value = float(value)
     if   unit == "MHz" : return value / 1.0e3
@@ -104,7 +97,7 @@ def convert_to_Hz(value, unit):
     elif unit == "kHz" : return value * 1.0e3
     else               : return value # Passthrough
 
-
+# RCS
 def convert_to_m2(value, unit):
     value = float(value)
     if   unit == "ft\u00B2" : return value / 10.7639
@@ -116,7 +109,7 @@ def convert_to_ft2(value, unit):
     if   unit == "m\u00B2" : return value * 10.7639
     else                   : return value # Passthrough
 
-
+# Velocity
 def convert_to_ms(value, unit):
     value = float(value)
     if   unit == "km/h"  : return value / 3.6
