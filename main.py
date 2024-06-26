@@ -20,7 +20,7 @@ notebook.pack(expand=True)
 
 tab1 = Tab1(notebook)
 tab2 = Tab2(notebook)
-tab3 = Tab3(notebook)\
+tab3 = Tab3(notebook)
 
 notebook.add(tab1, text="Linear")
 notebook.add(tab2, text="Logarithmic")
