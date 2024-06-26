@@ -8,34 +8,38 @@ from matplotlib.figure import Figure
 default_font = ('Arial', 12)
 bold_font    = ("Arial", 12, "bold")
 
-def validate_entries(tab, column, rowNum):
+def validate_entries(tab, column, rowNum, rowStart=0, type="pr"):
             blank_entries = []
             error_found = False
 
             alpha_chars = "abcdfghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            special_chars = "[$&+,:;=?@#|'\"<>_^*()%!]"
+            special_chars = "[$&,:;=?@#|'\"<>_^*()%!]"
 
             # Loop through all children of the self window
             for child in tab.winfo_children():
                 if isinstance(child, tkinter.Entry):
                     info = child.grid_info()
-                    if info['column'] == column and info['row'] <= rowNum:
+                    if info['column'] == column and info['row'] <= rowNum and info['row'] >= rowStart:
                         value = child.get()
 
                         if any(char in value for char in alpha_chars) or \
-                        any(char in value for char in special_chars) or \
-                        value in ["0", "0.0"]:
-                            print(f"Error: Invalid input '{value}' in row {info['row']}")
-                            child.delete(0, tkinter.END)
-                            child.insert(0, "invalid input")
-                            child.config(fg="red")
-                            error_found = True
+                           any(char in value for char in special_chars) or \
+                           value in ["0", "0.0"]:
+                                print(f"Error: Invalid input '{value}' in row {info['row']}")
+                                child.delete(0, tkinter.END)
+                                child.insert(0, "invalid input")
+                                child.config(fg="red")
+                                error_found = True
                         elif value == "":
                             blank_entries.append(child)
 
             
-            if (column == 1 and len(blank_entries) == 7) or (column in [3, 5] and len(blank_entries) == 9):
+            if (column == 1 and len(blank_entries) == 7 and type == "pr")\
+               or (column in [3, 5] and len(blank_entries) == 9 and type == "pr")\
+               or (column == 1 and len(blank_entries) == 2 and type == "unam_r")\
+               or (column == 1 and len(blank_entries) == 4 and type == "doppler_f"):
                 error_found = True
+
             elif len(blank_entries) > 1:
                 for entry in blank_entries:
                     entry.delete(0, tkinter.END)

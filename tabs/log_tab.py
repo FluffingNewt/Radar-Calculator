@@ -51,7 +51,7 @@ class Tab2(tkinter.Frame):
                         elif self.pt_unit == "W" : pt = formulas.convert_to_W(self.pt, "dBW")
                         else                     : pt = self.pt
 
-                        pt_entries["pr"].insert(0, f"{pt}")
+                        pt_entries["pr"].insert(0, f"{pt:.4e}")
 
                     except:
                         r_entries["pr"].insert(0, "error")
@@ -60,12 +60,12 @@ class Tab2(tkinter.Frame):
                 elif self.gt  == "":
                     log_gt = formulas.rre_log_gt(self.pr, self.pt, self.gr, self.f, self.rcs, self.r)
                     self.gt = 10 ** (log_gt / 10)
-                    gt_entries["pr"].insert(0, f"{self.gt}")
+                    gt_entries["pr"].insert(0, f"{self.gt:.4e}")
 
                 elif self.gr  == "":
                     log_gr = formulas.rre_log_gt(self.pr, self.pt, self.gt, self.f, self.rcs, self.r)
                     self.gr = 10 ** (log_gr / 10)
-                    gr_entries["pr"].insert(0, f"{self.gr}")
+                    gr_entries["pr"].insert(0, f"{self.gr:.4e}")
 
                 elif self.f   == "":
                     log_f = formulas.rre_log_f(self.pr, self.pt, self.gt, self.gr, self.rcs, self.r)
@@ -77,7 +77,7 @@ class Tab2(tkinter.Frame):
                         elif self.f_unit == "kHz" : f = formulas.convert_to_kHz(self.f, "Hz")
                         else                      : f = self.f
 
-                        f_entries["pr"].insert(0, f"{f}")
+                        f_entries["pr"].insert(0, f"{f:.4e}")
 
                     except:
                         r_entries["pr"].insert(0, "error")
@@ -91,7 +91,7 @@ class Tab2(tkinter.Frame):
                         if self.rcs_unit == "ft\u00B2" : rcs = formulas.convert_to_ft2(self.rcs, "m\u00B2")
                         else                           : rcs = self.rcs
 
-                        rcs_entries["pr"].insert(0, f"{rcs}")
+                        rcs_entries["pr"].insert(0, f"{rcs:.4e}")
 
                     except:
                         r_entries["pr"].insert(0, "error")
@@ -107,7 +107,7 @@ class Tab2(tkinter.Frame):
                         elif self.r_unit == "ft"  : r = formulas.convert_to_ft(self.r, "m")
                         else                      : r = self.r
 
-                        r_entries["pr"].insert(0, f"{r}")
+                        r_entries["pr"].insert(0, f"{r:.4e}")
 
                     except:
                         r_entries["pr"].insert(0, "error")
@@ -124,7 +124,7 @@ class Tab2(tkinter.Frame):
                         elif self.pr_unit == "W"   : pr = formulas.convert_to_W(self.pr, "dBW")
                         else                       : pr = self.pr
 
-                        pr_entries["pr"].insert(0, f"{pr}")
+                        pr_entries["pr"].insert(0, f"{pr:.4e}")
 
                     except:
                         pr_entries["pr"].insert(0, "error")
@@ -216,7 +216,7 @@ class Tab2(tkinter.Frame):
         m.create_label(self, "Pt : Power Transmitted", row, col)
         pt_entries["pr"] = m.create_entry(self, row, col+1, 10)
         pt_units["pr"] = tkinter.StringVar(value="dBW")
-        m.create_combobox(self, pt_units["pr"], formulas.units_dBW, row, col+2)
+        m.create_combobox(self, pt_units["pr"], formulas.units_pwr, row, col+2)
 
         row = 3
         col = 0
@@ -240,7 +240,7 @@ class Tab2(tkinter.Frame):
         m.create_label(self, "\u03BD : Frequency", row, col)
         f_entries["pr"] = m.create_entry(self, row, col+1, 10)
         f_units["pr"] = tkinter.StringVar(value="GHz")
-        m.create_combobox(self, f_units["pr"], formulas.units_GHz, row, col+2)
+        m.create_combobox(self, f_units["pr"], formulas.units_freq, row, col+2)
 
         row = 6 
         col = 0
@@ -250,7 +250,7 @@ class Tab2(tkinter.Frame):
         m.create_label(self, "\u03C3 : Radar Cross Section", row, col)
         rcs_entries["pr"] = m.create_entry(self, row, col+1, 10)
         rcs_units["pr"] = tkinter.StringVar(value="m\u00B2")
-        m.create_combobox(self, rcs_units["pr"], formulas.units_rcs, row, col+2)
+        m.create_combobox(self, rcs_units["pr"], formulas.units_area, row, col+2)
 
         row = 7
         col = 0
@@ -260,7 +260,7 @@ class Tab2(tkinter.Frame):
         m.create_label(self, "R : Range", row, col)
         r_entries["pr"] = m.create_entry(self, row, col+1, 10)
         r_units["pr"] = tkinter.StringVar(value="NMI")
-        m.create_combobox(self, r_units["pr"], formulas.units_NMI, row, col+2)
+        m.create_combobox(self, r_units["pr"], formulas.units_range, row, col+2)
 
         row = 9
         col = 0
@@ -270,7 +270,7 @@ class Tab2(tkinter.Frame):
         m.create_label(self, "Pr : Power Received", row, col, 10, 10)
         pr_entries["pr"] = m.create_entry(self, row, col+1, 10)
         pr_units["pr"] = tkinter.StringVar(value="dBW")
-        m.create_combobox(self, pr_units["pr"], formulas.units_dBW, row, col+2)
+        m.create_combobox(self, pr_units["pr"], formulas.units_pwr, row, col+2)
 
         row = 11
         col = 0
@@ -283,12 +283,12 @@ class Tab2(tkinter.Frame):
         ## x Unit
         plot_x_unit = tkinter.StringVar(value="NMI")
         m.create_label(frame, "x Unit", row, col)
-        m.create_combobox(frame, plot_x_unit, formulas.units_NMI, row, col+1)
+        m.create_combobox(frame, plot_x_unit, formulas.units_range, row, col+1)
 
         ## y Unit
         plot_y_unit = tkinter.StringVar(value="dBW")
         m.create_label(frame, "y Unit", row+1, col)
-        m.create_combobox(frame, plot_y_unit, formulas.units_dBW, row+1, col+1)
+        m.create_combobox(frame, plot_y_unit, formulas.units_pwr, row+1, col+1)
 
         ## Plot Button
         btn_plot = tkinter.Button(frame, text="Plot", command=calculate_and_plot, font=m.default_font)
