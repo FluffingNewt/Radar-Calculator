@@ -129,30 +129,48 @@ class Tab4(tkinter.Frame):
                         pr_entries["pr"].insert(0, "error")
                         pr_entries["pr"].config(fg="red")
                 
-            def convert_x_values(self, unit):
-                if unit == "m": return
+            
+            def gen_graph(self):
 
+
+                # generate x and y values
+                self.x_values = numpy.linspace(1, self.r, 10)
+
+                for r in self.x_values:
+                    pr = formulas.rre_log_pr(self.pt, self.gt, self.gr, self.f, self.rcs, r)
+                    self.y_values.append(pr)
+                
+
+                self.convert_x_values(plot_x_unit.get())
+                self.convert_y_values(plot_y_unit.get())
+
+                return
+            
+            
+            def convert_x_values(self, unit):
                 new_x_values = []
                 for val in self.x_values:
 
-                    if   unit == "NMI" : val = f.convert_to_NMI(val, "m")
-                    elif unit == "mi"  : val = f.convert_to_mi(val, "m")
-                    elif unit == "ft"  : val = f.convert_to_ft(val, "m")
+                    if   unit == "NMI" : val = formulas.convert_to_NMI(val, "m")
+                    elif unit == "mi"  : val = formulas.convert_to_mi(val, "m")
+                    elif unit == "ft"  : val = formulas.convert_to_ft(val, "m")
 
-                    # new_x_values.append(f.convert_to_log(val))
+                    new_x_values.append(formulas.convert_to_log(val))
                 
                 self.x_values = new_x_values
 
 
             def convert_y_values(self, unit):
+                if unit == "dBW": return
+
                 new_y_values = []
-
                 for val in self.y_values:
+                    
+                    val = 10 ** (val / 10)
+                    if   unit == "dBm" : val = formulas.convert_to_dBm(val, "dBW")
+                    elif unit == "W"   : val = formulas.convert_to_W(val, "dBW")
 
-                    if   unit == "dBW" : val = f.convert_to_dBW(val, "W")
-                    elif unit == "dBm" : val = f.convert_to_dBm(val, "W")
-
-                    new_y_values.append(val)
+                    new_y_values.append(formulas.convert_to_log(val))
                 
                 self.y_values = new_y_values
 
@@ -175,11 +193,15 @@ class Tab4(tkinter.Frame):
                             rcs_entries["pr"] , rcs_units ["pr"],
                             r_entries  ["pr"] , r_units   ["pr"])
             
-            graph_pr.calc_missing()
-            
 
             # Clear, initialize, and plot graph
             if not pr_error:
+                graph_pr.calc_missing()
+                graph_pr.gen_graph()
+
+                for x, y in zip(graph_pr.x_values, graph_pr.y_values):
+                    print(f"x: {x}  y: {y}")
+
                 fig.clear()
                 ax = fig.add_subplot(111)
                 ax.plot(graph_pr.x_values, graph_pr.y_values, label="Received Power")

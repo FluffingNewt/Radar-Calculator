@@ -78,7 +78,6 @@ def convert_to_W(value, unit):
     elif unit == "dBm" : return math.pow(10, value / 10.0) / 1000.0
     else               : return value  # Passthrough
 
-
 # Frequency
 def convert_to_GHz(value, unit):
     if value == "": return ""
@@ -174,6 +173,9 @@ def convert_to_knots(value, unit):
     elif unit == "km/h"  : return value / 1.852
     elif unit == "mi/h"  : return value / 1.151
     else                 : return value  # Passthrough
+
+def convert_to_log(value):
+    return 10 * math.log10(value)
 
 #!###### Linear RRE Formulas ######!#
 
