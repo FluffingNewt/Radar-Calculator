@@ -12,6 +12,7 @@ def validate_entries(tab, column, rowNum):
             blank_entries = []
             error_found = False
 
+            alpha_chars = "abcdfghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             special_chars = "[$&+,:;=?@#|'\"<>_^*()%!]"
 
             # Loop through all children of the self window
@@ -21,7 +22,7 @@ def validate_entries(tab, column, rowNum):
                     if info['column'] == column and info['row'] <= rowNum:
                         value = child.get()
 
-                        if any(char.isalpha() for char in value) or \
+                        if any(char in value for char in alpha_chars) or \
                         any(char in value for char in special_chars) or \
                         value in ["0", "0.0"]:
                             print(f"Error: Invalid input '{value}' in row {info['row']}")
@@ -46,7 +47,7 @@ def validate_entries(tab, column, rowNum):
             return error_found
 
 def reset_entry(event, entry):
-    if entry.get() == "invalid input":
+    if entry.get() in ["invalid input", "error"]:
         entry.delete(0, tkinter.END)
         entry.config(fg="black")
 
