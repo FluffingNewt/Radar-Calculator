@@ -5,9 +5,6 @@ import tkinter
 
 class Tab4(tkinter.Frame):
 
-    default_font = ('Arial', 12)
-    bold_font    = ("Arial", 12, "bold")
-
     def __init__(self, parent):
         super().__init__(parent)
 

@@ -15,7 +15,6 @@ def validate_entries(tab, column, rowStart, rowStop, type):
             alpha_chars = "abcdfghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             special_chars = "[$&,:;=?@#|'\"<>_^*()%!]"
 
-            # Loop through all children of the self window
             for child in tab.winfo_children():
 
                 if isinstance(child, tkinter.Entry):
@@ -29,30 +28,28 @@ def validate_entries(tab, column, rowStart, rowStop, type):
                            any(char in value for char in special_chars) or \
                            value in ["0", "0.0"]:
                                 
-                                print(f"Error: Invalid input '{value}' in row {info['row']}")
-                                child.delete(0, tkinter.END)
-                                child.insert(0, "invalid input")
-                                child.config(fg="red")
-                                error_found = True
+                            print(f"Error: Invalid input '{value}' in row {info['row']}")
+                            child.delete(0, tkinter.END)
+                            child.insert(0, "invalid input")
+                            child.config(fg="red")
+                            error_found = True
 
                         elif value == "":
-
                             blank_entries.append(child)
             
-            if type == "unam_r" and len(blank_entries) == 2 or \
-               type == "doppler" and len(blank_entries) == 4 or \
+            if type == "unam_r"      and len(blank_entries) == 2 or \
+               type == "doppler"     and len(blank_entries) == 4 or \
                type in ["pr", "log"] and len(blank_entries) == 7 or \
-               type in ["nj", "rj"] and len(blank_entries) == 9:
+               type in ["nj", "rj"]  and len(blank_entries) == 9:
                 
                 error_found = True
-
-                
 
             elif len(blank_entries) > 1:
                 for entry in blank_entries:
                     entry.delete(0, tkinter.END)
                     entry.insert(0, "invalid input")
                     entry.config(fg="red")
+                    
                 error_found = True
                 print('Error: Blank lines detected')
 

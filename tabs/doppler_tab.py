@@ -5,14 +5,10 @@ import tkinter
 
 class Tab3(tkinter.Frame):
 
-    default_font = ('Arial', 12)
-    bold_font    = ("Arial", 12, "bold")
-
     def __init__(self, parent):
         super().__init__(parent)
 
         def calc_doppler():
-
             if m.validate_entries(self, 1, 1, 4, "doppler"): return
 
             if   vs_entry.get() == "":
@@ -66,13 +62,11 @@ class Tab3(tkinter.Frame):
 
                 fd_entry.insert(0, f"{fd}")
         
-
         row = 0
         col = 0
         m.create_label(self, "Shooter-Target Velocity", row, col)
 
         row = 1
-        col = 0
         m.create_separator(self, "vertical", row, col+1, 5, rowspan=4)
         m.create_label(self, "Vs : Shooter Velocity", row, col)
         vs_entry = m.create_entry(self, row, col+1, 10)
@@ -80,21 +74,18 @@ class Tab3(tkinter.Frame):
         m.create_combobox(self, vs_unit, f.units_vel, row, col+2)
 
         row = 2
-        col = 0
         m.create_label(self, "Vt : Target Velocity", row, col)
         vt_entry = m.create_entry(self, row, col+1, 10)
         vt_unit = tkinter.StringVar(value="knots")
         m.create_combobox(self, vt_unit, f.units_vel, row, col+2)
 
         row = 3
-        col = 0
         m.create_label(self, "ft : Transmit Frequency", row, col)
         ft_entry = m.create_entry(self, row, col+1, 10)
         ft_unit = tkinter.StringVar(value="GHz")
         m.create_combobox(self, ft_unit, f.units_freq, row, col+2)
 
         row = 4
-        col = 0
         m.create_label(self, "fd : Doppler Frequency", row, col)
         fd_entry = m.create_entry(self, row, col+1, 10)
         fd_unit = tkinter.StringVar(value="GHz")
@@ -102,9 +93,6 @@ class Tab3(tkinter.Frame):
         doppler_btn = tkinter.Button(self, text="Calculate", command=calc_doppler, font=m.default_font)
         doppler_btn.grid(row=row, column=col+3, padx=5, sticky="")
 
-
-
-        row = 7
-        col = 0
+        row = 6
         m.create_separator(self, "horizontal", row-1, col, 0, 10, columnspan=10)
         m.create_label(self, "Unambiguous Closing Velocity (Doppler)", row, col)

@@ -7,10 +7,8 @@ from matplotlib.figure import Figure
 
 
 class Tab1(tkinter.Frame):
-
     
     graph_types  = ["pr", "nj", "rj"]
-
 
     def __init__(self, parent):
         super().__init__(parent)

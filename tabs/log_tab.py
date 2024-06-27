@@ -8,14 +8,11 @@ from matplotlib.figure import Figure
 #* Notes
 #* - Converts the input values into 10*log_10 values and calculates Pr
 #* - If a value is empty, it will fill the box with the normal base10 version of the value.
-
-#! To-Do
-#!
+#* - As the formulas output the 10*log_10 values, it plots the log scaled x and y axis to the graph
 
 class Tab2(tkinter.Frame):
     
     graph_types  = ["pr", "nj", "rj"]
-
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -219,21 +216,18 @@ class Tab2(tkinter.Frame):
         m.create_combobox(self, pt_units["pr"], formulas.units_pwr, row, col+2)
 
         row = 3
-        col = 0
         # Gain Transmitted
         gt_entries = {}
         m.create_label(self, "Gt : Gain Transmitted", row, col)
         gt_entries["pr"] = m.create_entry(self, row, col+1, 10)
 
         row = 4
-        col = 0
         # Gain Received
         gr_entries = {}
         m.create_label(self, "Gr : Gain Received", row, col)
         gr_entries["pr"] = m.create_entry(self, row, col+1, 10)
 
         row = 5
-        col = 0
         # Frequency
         f_entries = {}
         f_units = {}
@@ -242,8 +236,7 @@ class Tab2(tkinter.Frame):
         f_units["pr"] = tkinter.StringVar(value="GHz")
         m.create_combobox(self, f_units["pr"], formulas.units_freq, row, col+2)
 
-        row = 6 
-        col = 0
+        row = 6
         # RCS
         rcs_entries = {}
         rcs_units = {}
@@ -253,7 +246,6 @@ class Tab2(tkinter.Frame):
         m.create_combobox(self, rcs_units["pr"], formulas.units_area, row, col+2)
 
         row = 7
-        col = 0
         # Range
         r_entries = {}
         r_units = {}
@@ -263,7 +255,6 @@ class Tab2(tkinter.Frame):
         m.create_combobox(self, r_units["pr"], formulas.units_range, row, col+2)
 
         row = 9
-        col = 0
         # Power Received
         pr_entries = {}
         pr_units = {}
@@ -273,13 +264,11 @@ class Tab2(tkinter.Frame):
         m.create_combobox(self, pr_units["pr"], formulas.units_pwr, row, col+2)
 
         row = 11
-        col = 0
         # Graph Units Frame
         frame = tkinter.Frame(self)
         frame.grid(row=row, column=col, columnspan=1, rowspan=1, sticky="n")
 
         row = 0
-        col = 0
         ## x Unit
         plot_x_unit = tkinter.StringVar(value="NMI")
         m.create_label(frame, "x Unit", row, col)
