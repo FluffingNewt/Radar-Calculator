@@ -1,9 +1,5 @@
-import lib.formulas as f
-import numpy
 import tkinter
 from tkinter import ttk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
 
 default_font = ('Arial', 12)
 bold_font    = ("Arial", 12, "bold")
