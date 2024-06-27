@@ -13,7 +13,7 @@ class Tab3(tkinter.Frame):
 
         def calc_doppler():
 
-            if m.validate_entries(self, 1, 3, 1, "doppler_f"): return
+            if m.validate_entries(self, 1, 1, 4, "doppler"): return
 
             if   vs_entry.get() == "":
                 vt = f.convert_to_ms(vt_entry.get(), vt_unit.get())

@@ -176,7 +176,7 @@ class Tab2(tkinter.Frame):
             pr_error = False
 
             # Check if all text fields have valid inputs
-            pr_error = m.validate_entries(self, 1, 10)
+            pr_error = m.validate_entries(self, 1, 2, 9, "log")
 
             self.focus_set()
 

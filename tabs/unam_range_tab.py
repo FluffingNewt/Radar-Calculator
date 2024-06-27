@@ -14,7 +14,7 @@ class Tab4(tkinter.Frame):
 
 
         def calc_unam_rPRF():
-            if m.validate_entries(self, 1, 2, 1, "unam_r"): return
+            if m.validate_entries(self, 1, 1, 2, "unam_r"): return
 
             if prf_entry.get() == "":
                 r = f.convert_to_m(r_prf_entry.get(), r_prf_entry.get())
@@ -41,7 +41,7 @@ class Tab4(tkinter.Frame):
 
         
         def calc_unam_rPRI():
-            if m.validate_entries(self, 1, 2, 5, "unam_r"): return
+            if m.validate_entries(self, 1, 5, 6, "unam_r"): return
 
             if pri_entry.get() == "":
 

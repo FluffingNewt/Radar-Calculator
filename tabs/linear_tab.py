@@ -417,10 +417,9 @@ class Tab1(tkinter.Frame):
 
             # Check if all text fields have valid inputs
             for i in range(1, 6, 2):
-                error = m.validate_entries(self, i, 12)
-                if   i == 1: pr_error = error
-                elif i == 3: nj_error = error
-                elif i == 5: rj_error = error
+                if   i == 1: pr_error = m.validate_entries(self, i, 1, 12, "pr")
+                elif i == 3: nj_error = m.validate_entries(self, i, 1, 12, "nj")
+                elif i == 5: rj_error = m.validate_entries(self, i, 1, 12, "rj")
 
             self.focus_set()
 
