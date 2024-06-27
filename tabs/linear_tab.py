@@ -7,10 +7,8 @@ from matplotlib.figure import Figure
 
 
 class Tab1(tkinter.Frame):
-
     
     graph_types  = ["pr", "nj", "rj"]
-
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -417,10 +415,9 @@ class Tab1(tkinter.Frame):
 
             # Check if all text fields have valid inputs
             for i in range(1, 6, 2):
-                error = m.validate_entries(self, i, 12)
-                if   i == 1: pr_error = error
-                elif i == 3: nj_error = error
-                elif i == 5: rj_error = error
+                if   i == 1: pr_error = m.validate_entries(self, i, 1, 12, "pr")
+                elif i == 3: nj_error = m.validate_entries(self, i, 1, 12, "nj")
+                elif i == 5: rj_error = m.validate_entries(self, i, 1, 12, "rj")
 
             self.focus_set()
 
@@ -484,7 +481,7 @@ class Tab1(tkinter.Frame):
         for type in Tab1.graph_types:
             pt_entries[type] = m.create_entry(self, row, col+1, 10)
             pt_units[type] = tkinter.StringVar(value="dBW")
-            m.create_combobox(self, pt_units[type], f.units_dBW, row, col+2)
+            m.create_combobox(self, pt_units[type], f.units_pwr, row, col+2)
             m.create_separator(self, "vertical", 0, col+1, 5, rowspan=14)
             col += 2
 
@@ -515,7 +512,7 @@ class Tab1(tkinter.Frame):
         for type in Tab1.graph_types:
             f_entries[type] = m.create_entry(self, row, col+1, 10)
             f_units[type] = tkinter.StringVar(value="GHz")
-            m.create_combobox(self, f_units[type], f.units_GHz, row, col+2)
+            m.create_combobox(self, f_units[type], f.units_freq, row, col+2)
             col += 2
 
         row = 6 
@@ -526,7 +523,7 @@ class Tab1(tkinter.Frame):
         m.create_label(self, "\u03C3 : Radar Cross Section", row, col)
         rcs_entries["pr"] = m.create_entry(self, row, col+1, 10)
         rcs_units["pr"] = tkinter.StringVar(value="m\u00B2")
-        m.create_combobox(self, rcs_units["pr"], f.units_rcs, row, col+2)
+        m.create_combobox(self, rcs_units["pr"], f.units_area, row, col+2)
 
         row = 7
         col = 0
@@ -537,7 +534,7 @@ class Tab1(tkinter.Frame):
         for type in Tab1.graph_types:
             r_entries[type] = m.create_entry(self, row, col+1, 10)
             r_units[type] = tkinter.StringVar(value="NMI")
-            m.create_combobox(self, r_units[type], f.units_NMI, row, col+2)
+            m.create_combobox(self, r_units[type], f.units_range, row, col+2)
             col += 2
 
         row = 8
@@ -579,7 +576,7 @@ class Tab1(tkinter.Frame):
         for type in Tab1.graph_types:
             pr_entries[type] = m.create_entry(self, row, col+1, 10)
             pr_units[type] = tkinter.StringVar(value="dBW")
-            m.create_combobox(self, pr_units[type], f.units_dBW, row, col+2)
+            m.create_combobox(self, pr_units[type], f.units_pwr, row, col+2)
             col += 2
 
         row = 14
@@ -593,12 +590,12 @@ class Tab1(tkinter.Frame):
         ## x Unit
         plot_x_unit = tkinter.StringVar(value="NMI")
         m.create_label(frame, "x Unit", row, col)
-        m.create_combobox(frame, plot_x_unit, f.units_NMI, row, col+1)
+        m.create_combobox(frame, plot_x_unit, f.units_range, row, col+1)
 
         ## y Unit
         plot_y_unit = tkinter.StringVar(value="dBW")
         m.create_label(frame, "y Unit", row+1, col)
-        m.create_combobox(frame, plot_y_unit, f.units_dBW, row+1, col+1)
+        m.create_combobox(frame, plot_y_unit, f.units_pwr, row+1, col+1)
 
         ## Plot Button
         btn_plot = tkinter.Button(frame, text="Plot", command=calculate_and_plot, font=m.default_font)

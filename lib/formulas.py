@@ -1,11 +1,11 @@
 import math
 
-units_NMI  = ["NMI", "mi", "m", "ft"]
-units_dBW  = ["dBW", "dBm", "W"]
-units_GHz  = ["GHz", "MHz", "Hz", "kHz"]
-units_rcs  = ["m\u00B2", "ft\u00B2"]
+units_range  = ["NMI", "mi", "m", "ft"]
+units_pwr  = ["dBW", "dBm", "W"]
+units_freq  = ["GHz", "MHz", "Hz", "kHz"]
+units_area  = ["m\u00B2", "ft\u00B2"]
 units_vel  = ["m/s", "km/h", "mi/h", "knots"]
-
+units_time = ["ms", "s", "min", "hr"]
 
 c = 299792458.0
 
@@ -173,6 +173,43 @@ def convert_to_knots(value, unit):
     elif unit == "km/h"  : return value / 1.852
     elif unit == "mi/h"  : return value / 1.151
     else                 : return value  # Passthrough
+
+# Time
+def convert_to_ms(value, unit):
+    if value == "": return ""
+    
+    value = float(value)
+    if   unit == "s"   : return value * 1000
+    elif unit == "min" : return value * 60000
+    elif unit == "hr"  : return value * 3600000
+    else               : return value  # Passthrough
+
+def convert_to_s(value, unit):
+    if value == "": return ""
+    
+    value = float(value)
+    if   unit == "ms"  : return value / 1000
+    elif unit == "min" : return value * 60
+    elif unit == "hr"  : return value * 3600
+    else               : return value  # Passthrough
+
+def convert_to_min(value, unit):
+    if value == "": return ""
+    
+    value = float(value)
+    if   unit == "ms" : return value / 60000
+    elif unit == "s"  : return value / 60
+    elif unit == "hr" : return value * 60
+    else              : return value  # Passthrough
+
+def convert_to_hr(value, unit):
+    if value == "": return ""
+    
+    value = float(value)
+    if   unit == "ms"  : return value / 3600000
+    elif unit == "s"   : return value / 3600
+    elif unit == "min" : return value / 60
+    else               : return value  # Passthrough
 
 def convert_to_log(value):
     return 10 * math.log10(value)
@@ -352,16 +389,54 @@ def rre_log_r(pr, pt, gt, gr, f, rcs):
 #     wavelength = 10 * math.log10(c) - 10 * math.log10(f)
 #     return 10 * math.log10(pt) + 10 * math.log10(gt) + 10 * math.log10(gr) + 2 * wavelength - 10 * math.log10(pr) - 20 * math.log10(4 * math.pi) - 20 * math.log10(r) - 10 * math.log10(lt) - 10 * math.log10(la)
 
-#! Doppler Formulas
+#!###### Doppler Formulas ######!#
 
 def doppler_vs(fd, ft, vt):
+    fd = float(fd)
+    ft = float(ft)
+    vt = float(vt)
+
     return (fd * c) / (2 * ft) - vt
 
 def doppler_vt(fd, ft, vs):
+    fd = float(fd)
+    ft = float(ft)
+    vs = float(vs)
+    
     return (fd * c) / (2 * ft) - vs
 
 def doppler_ft(fd, vs, vt):
+    fd = float(fd)
+    vs = float(vs)
+    vt = float(vt)
+    
     return (fd * c) / (2 * (vs + vt))
 
 def doppler_fd(vs, vt, ft):
+    vs = float(vs)
+    vt = float(vt)
+    ft = float(ft)
+
     return (2 * (vs + vt) * ft) / c
+
+#!###### Unambiguous Range Formulas ######!#
+
+def unam_range_prf(r):
+    r = float(r)
+
+    return c / (2 * r)
+
+def unam_range_pri(r):
+    r = float(r)
+    
+    return (2 * r) / c
+
+def unam_range_rPRF(prf):
+    prf = float(prf)
+    
+    return c / (2 * prf)
+
+def unam_range_rPRI(pri):
+    pri = float(pri)
+    
+    return (c * pri) / 2
